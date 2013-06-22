@@ -1,0 +1,56 @@
+html, body {
+	height: 100%;
+	background: #64A8D1;
+}
+
+.full-height {
+/* 	position: absolute; */
+	top: 0px;
+	bottom: 0px;
+/* 	margin-bottom: 100px; */
+}
+
+#chat {
+	position: relative;
+	background: #FFC073;
+	padding-bottom: 36px;
+}
+
+#talk {
+	position: absolute;
+	left:0;
+	bottom: 0;
+	height: 2.8em;
+	line-height: 2.8em;
+	background: #4C57D8;
+	width: 100%;
+	padding: 0.4em;
+}
+
+.chat-screen {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 2.8em;
+	padding: 1em;
+	overflow-y: scroll;
+}
+
+.top-bar {
+	margin-bottom: 0;
+}
+
+.section-container > section .content, .section-container > .section .content, .section-container.auto > section .content, .section-container.auto > .section .content {
+	background: inherit;
+	padding: 0.2em;
+}
+
+.section-container > section > .title a, .section-container > .section > .title a, .section-container.auto > section > .title a, .section-container.auto > .section > .title a {
+	padding: 0.2em;
+	display: inline-block;
+	color: #333;
+	font-size: 0.875em;
+	white-space: nowrap;
+	overflow:hidden;
+}

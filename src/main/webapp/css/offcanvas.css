@@ -1,0 +1,35 @@
+.offcanvas-breakpoint {
+	width: 58.75em;
+}
+
+.offcanvas-button {
+	visibility:hidden;
+	height:0;
+	position:absolute;
+}
+@media only screen and (max-width:58.75em) {
+	.js-available .offcanvas {
+		position: absolute;
+		display: block;
+		width: 80%;
+		z-index: 1000;
+		overflow: hidden;
+	}
+	.js-available .offcanvas.left {
+		left: 0;
+	}
+	.js-available .offcanvas.left.hidden {
+		left: -80%;
+	}
+	.js-available .offcanvas.right {
+		right: 0;
+	}
+	.js-available .offcanvas.right.hidden {
+		right: -80%;
+	}
+	.js-available .offcanvas-button {
+		visibility:visible;
+		height:auto;
+		position:inherit;
+	}
+}
