@@ -1,5 +1,5 @@
 .offcanvas-breakpoint {
-	width: 58.75em;
+	width: 800px;
 }
 
 .offcanvas-button {
@@ -7,7 +7,7 @@
 	height:0;
 	position:absolute;
 }
-@media only screen and (max-width:58.75em) {
+@media only screen and (max-width:800px) {
 	.js-available .offcanvas {
 		position: absolute;
 		display: block;
