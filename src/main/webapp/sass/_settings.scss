@@ -89,7 +89,7 @@ $success-color: #0D291D;
 
 // Media Queries
 
-$small-screen: 800px;
+$small-screen: 768px;
 // $medium-screen: 1280px;
 // $large-screen: 1440px;
 
@@ -113,7 +113,7 @@ $small-screen: 800px;
 // Grid Variables
 //
 
-// $row-width: emCalc(1000px);
+$row-width: $small-screen;
 $column-gutter: 0;
 // $total-columns: 12;
 
@@ -966,10 +966,10 @@ $form-spacing: emCalc(8px);
 // Modal itself.
 
 // $reveal-modal-bg: #fff;
-// $reveal-position-top: 50px;
+$reveal-position-top: 20px;
 // $reveal-default-width: 80%;
 // $reveal-modal-padding: emCalc(20px);
-// $reveal-box-shadow: 0 0 10px rgba(#000,.4);
+$reveal-box-shadow: none;
 
 // Reveal close button
 
@@ -1257,7 +1257,7 @@ $topbar-menu-link-font-size: emCalc(12px);
 // Transitions and breakpoint styles
 
 // $topbar-transition-speed: 300ms;
-$topbar-breakpoint: 800px; // Change to 9999px for always mobile layout
+$topbar-breakpoint: $small-screen; // Change to 9999px for always mobile layout
 // $topbar-media-query: "only screen and (min-width: #{$topbar-breakpoint})";
 
 // Divider Styles

@@ -9,16 +9,15 @@
 <meta name="viewport" content="width=device-width" />
 <title>YourChat</title>
 <link rel="stylesheet" href="css/app.css" />
-<link rel="stylesheet" href="css/offcanvas.css" />
-<link rel="stylesheet" href="css/style.css" />
 <!--[if lt IE 8]><link rel="stylesheet" href="css/font-awesome-ie7.min.css" /><![endif] -->
 <!--[if gt IE 8]><! -->
 <link rel="stylesheet" href="css/font-awesome.min.css" />
 <!--<![endif] -->
-<script src="js/vendor/jquery.js"></script>
 <script src="js/vendor/custom.modernizr.js"></script>
+<script src="js/vendor/jquery.js"></script>
 <script src="js/jquery-ui.min.js"></script>
 <script src="js/jquery-ui.offcanvas.js"></script>
+<script src="js/foundation.min.js"></script>
 <script>
 	function chatResize() {
 		var $chat = $('#chat');
@@ -32,6 +31,22 @@
 		$(document).foundation();
 	});
 	$(window).resize(chatResize);
+
+	// Invitation-Dialog /a
+	function createKey() {
+		var selectedVal = "";
+		var selected = $("#inviteForm input[type='radio']:checked");
+		if (selected.length > 0) {
+			selectedVal = selected.val();
+		}
+		var key = invite(selectedVal);
+		if (key != null && key != 'null') {
+			var resultDiv = $('#inviteForm div');
+			resultDiv.css('visibility', 'visible');
+			$('#keyResult').html(key);
+		}
+	}
+	// Invitation-Dialog /e
 </script>
 </head>
 <body>
@@ -53,13 +68,15 @@
 			<section class="top-bar-section">
 				<!-- Right Nav Section -->
 				<ul class="right">
-					<li><a href="help.html" target="_blank"><i class="icon-question"></i>&nbsp;Help</a></li>
+					<li><a href="help.html" target="_blank"><i
+							class="icon-question"></i>&nbsp;Help</a></li>
 					<li class="divider"></li>
-					<li><a href="profile.jsp?edit=true" target="chat_profil"><i class="icon-edit"></i>&nbsp;Profile</a></li>
-					<li><a href="#messageDialog" id="navMessageButton"><i class="icon-envelope"></i>&nbsp;Messages</a></li>
-					<li><a href="#inviteDialog"><i class="icon-ticket"></i>&nbsp;Invite</a></li>
+					<li><a href="profile.jsp?edit=true" target="chat_profil"><i
+							class="icon-edit"></i>&nbsp;Profile</a></li>
+					<li><a href="#" data-reveal-id="inviteDialog"><i class="icon-ticket"></i>&nbsp;Invite</a></li>
+					<li><a href="#" data-reveal-id="mailInboxDialog"><i class="icon-envelope"></i>&nbsp;Mail</a></li>
 					<li><a href="#" id="awayAction"><i class="icon-minus-sign"></i>&nbsp;Away</a></li>
-					<li><a href="#settingsDialog"><i class="icon-wrench"></i>&nbsp;Settings</a></li>
+					<li><a href="#" data-reveal-id="settingsDialog"><i class="icon-wrench"></i>&nbsp;Settings</a></li>
 					<li><a href="session?action=logout&key=<%=logoutKey%>"><i class="icon-power-off"></i>&nbsp;Logout</a></li>
 				</ul>
 			</section>
@@ -147,43 +164,224 @@
 					<input type="text">
 				</div>
 				<div class="row">
-					<div class="small-6 large-3 columns left">
+					<div class="small-5 large-3 columns left">
 						<label for="checkbox1"> <input type="checkbox"
 							id="checkbox1" style="display: none;"> <span
 							class="custom checkbox"></span>&nbsp;Autoscroll
 						</label>
 					</div>
-					<div class="small-6 large-3 columns left">
+					<div class="small-5 large-3 columns left">
 						<label for="checkbox1"> <input type="checkbox"
 							id="checkbox2" style="display: none;"> <span
 							class="custom checkbox"></span>&nbsp;Background
 						</label>
 					</div>
+					<div class="small-2 large-3 columns right">
+						<div class="right">
+							<a><i class="icon-upload-alt"></i></a>&nbsp;<i
+								class="icon-circle"></i>&nbsp;
+						</div>
+					</div>
 				</div>
 			</form>
 		</div>
+		>
 	</div>
 	<div id="sidebar" class="offcanvas left small-12 large-3 columns">
-		<div class="section-container auto" data-section>
+		<div class="section-container auto" data-section data-options="one_up: false; deep_linking: true">
 			<section>
 				<p class="title" data-section-title>
-					<a href="#panel1"><i class="icon-group"></i>&nbsp;Users</a>
+					<a href="#users"><i class="icon-group"></i>&nbsp;Users</a>
 				</p>
-				<div class="content" data-section-content>
+				<div class="content" data-slug="users" data-section-content>
 					<p>Content of section 1.</p>
 				</div>
 			</section>
 			<section>
 				<p class="title" data-section-title>
-					<a href="#panel2"><i class="icon-picture"></i>&nbsp;Media</a>
+					<a href="#media"><i class="icon-picture"></i>&nbsp;Media</a>
 				</p>
-				<div class="content" data-section-content>
+				<div class="content" data-slug="media" data-section-content>
 					<p>Content of section 2.</p>
 				</div>
 			</section>
 		</div>
 	</div>
-	<!-- 	</div> -->
-	<script src="js/foundation.min.js"></script>
+	
+	<div id="settingsDialog" class="reveal-modal">
+		<h5>settings</h5>
+		<form id="settingsForm" class="custom">
+			<div class="row">
+				<div class="large-4 columns">
+					<label>Nickcolor</label>
+					<input id="userColor" value="<%=userColor%>" onchange="userColorChange()"/>
+				</div>	    	
+			</div>
+			<div class="row">
+				<div class="large-4 columns">
+					<label for="fontSelector">Chatfont</label>
+					<select id="fontSelector" onchange="fontChange()" contenteditable="false"></select>
+				</div>
+			</div>
+	    	<label for="asyncCheck">
+	    	 	<input type="checkbox" id="asyncCheck" <%=asyncmode ? "checked='checked'" :"" %> /><span class="custom checkbox"></span> Alternate Chatmode</label>
+			</label>
+		</form>
+		<a href="#" class="small button" onclick="createKey()">Invite</a> <a
+			class="close-reveal-modal">&#215;</a>
+	</div>
+	
+	<div id="inviteDialog" class="reveal-modal">
+		<h5>Invitation</h5>
+		<form id="inviteForm" class="custom">
+			<p>
+				<label for="trial1"> <input name="trial" value="true"
+					type="radio" id="trial1" style="display: none;" CHECKED> <span
+					class="custom radio checked"></span> 24 Hour-Key
+				</label> <span class="help-block">The invitee may enter the chat
+					within the next 24 hours</span>
+			</p>
+			<p>
+				<label for="trial2"> <input name="trial" value="false"
+					type="radio" id="trial2" style="display: none;"> <span
+					class="custom radio"></span> Registration
+				</label> <span class="help-block">The invitee may register
+					permanently</span>
+			</p>
+			<div style="visibility: hidden">
+				<p>Give this key to your invitee</p>
+				<span id="keyResult" style="font-weight: bold"></span>
+			</div>
+		</form>
+		<a href="#" class="small button" onclick="createKey()">Invite</a> <a
+			class="close-reveal-modal">&#215;</a>
+	</div>
+	
+	<div id="mailInboxDialog" class="reveal-modal">
+		<form class="custom">
+			<h5>Inbox</h5>
+			<table class="mail">
+				<thead>
+					<tr>
+						<td>Subject</td>
+						<td>Sender</td>
+						<td class="hide-for-small date">Date</td>
+						<td class="delete"></td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr class="unread">
+						<td>Hallo Du</td>
+						<td>Horst</td>
+						<td class="hide-for-small date">10:00 26.02.2013</td>
+						<td class="delete"><input type="checkbox"/></td>
+					</tr>
+					<tr>
+						<td>Doofnuss</td>
+						<td>Werner</td>
+						<td class="hide-for-small date">10:00 26.02.2013</td>
+						<td class="delete"><input type="checkbox"/></td>
+					</tr>
+					<tr>
+						<td>wat geht?!</td>
+						<td>Horst</td>
+						<td class="hide-for-small date">10:00 26.02.2013</td>
+						<td class="delete"><input type="checkbox"/></td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td></td>
+						<td></td>
+						<td class="hide-for-small"></td>
+						<td><i class="icon-trash"></i></td>
+					</tr>
+				</tfoot>
+			</table>
+		</form>
+		<ul class="button-group even-3">
+		  <li><a href="#" class="small button">Inbox</a></li>
+		  <li><a href="#" data-reveal-id="mailOutboxDialog" class="small button">Outbox</a></li>
+		  <li><a href="#" data-reveal-id="mailSendDialog" class="small button">Send</a></li>
+		</ul>
+		<a class="close-reveal-modal">&#215;</a>
+	</div>
+	
+	<div id="mailOutboxDialog" class="reveal-modal">
+		<form class="custom">
+			<h5>Outbox</h5>
+			<table class="mail">
+				<thead>
+					<tr>
+						<td>Outbox</td>
+						<td>Recipient</td>
+						<td class="hide-for-small date">Date</td>
+						<td class="delete"></td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr class="unread">
+						<td>Hallo Du non  sec dolor</td>
+						<td>Horst</td>
+						<td class="hide-for-small date">10:00 26.02.2013</td>
+						<td class="delete"><input type="checkbox"/></td>
+					</tr>
+					<tr>
+						<td>Doofnuss</td>
+						<td>Werner</td>
+						<td class="hide-for-small date">10:00 26.02.2013</td>
+						<td class="delete"><input type="checkbox"/></td>
+					</tr>
+					<tr>
+						<td>wat geht?! sit amet massa</td>
+						<td>Horst</td>
+						<td class="hide-for-small date">10:00 26.02.2013</td>
+						<td class="delete"><input type="checkbox"/></td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td></td>
+						<td></td>
+						<td class="hide-for-small"></td>
+						<td><i class="icon-trash"></i></td>
+					</tr>
+				</tfoot>
+			</table>
+		</form>
+		<ul class="button-group even-3">
+		  <li><a href="#" data-reveal-id="mailInboxDialog" class="small button">Inbox</a></li>
+		  <li><a href="#" class="small button">Outbox</a></li>
+		  <li><a href="#" data-reveal-id="mailSendDialog" class="small button">Send</a></li>
+		</ul>
+		<a class="close-reveal-modal">&#215;</a>
+	</div>
+	
+	<div id="mailSendDialog" class="reveal-modal">
+		<form class="custom">
+			<h5>Send</h5>
+			<div class="row">
+		      <div class="large-12 columns">
+		        <input type="text" placeholder="Recipient">
+		      </div>
+		    </div>
+			<div class="row">
+		      <div class="large-12 columns">
+		        <input type="text" placeholder="Subject">
+		      </div>
+		    </div>
+			<div class="row">
+		      <div class="large-12 columns">
+		        <textarea placeholder="Body"></textarea>
+		      </div>
+		    </div>
+		</form>
+		<ul class="button-group even-3">
+		  <li><a href="#" data-reveal-id="mailInboxDialog" class="small button">Inbox</a></li>
+		  <li><a href="#" data-reveal-id="mailOutboxDialog" class="small button">Outbox</a></li>
+		  <li><a href="#" class="small button">Send</a></li>
+		</ul>
+		<a class="close-reveal-modal">&#215;</a>
+	</div>
 </body>
 </html>
