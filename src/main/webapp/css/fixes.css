@@ -1,0 +1,11 @@
+/* line 1, ../sass/fixes.scss */
+.section-container.auto {
+  border-left: none;
+  border-right: none;
+}
+/* line 5, ../sass/fixes.scss */
+.section-container.auto section.active > .content, .section-container.auto .section.active > .content {
+  border: none;
+  border-top: 2px solid white;
+  z-index: 100;
+}

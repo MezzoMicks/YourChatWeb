@@ -3,7 +3,7 @@ $primary-color: #0E0E29;
 $secondary-color: #738B9D;
 html, body {
 	height: 100%;
-	background: #fff;
+	background: #20272C;
 }
 
 textarea {
@@ -33,6 +33,10 @@ textarea {
 	padding: 0.4em;
 }
 
+#signal {
+	width:12px;
+	height:12px;
+}
 
 #talk form {
 	margin-bottom: 0;
@@ -41,6 +45,7 @@ textarea {
 #sidebar {
 	background: #20272C; 
 	color: white;
+	border-right: 2px solid white;
 }
 
 #chat-screen {
@@ -52,6 +57,24 @@ textarea {
 
 #profile-box {
 	background: $secondary-color;
+	margin-top: 1em;
+	border: 1px solid white;
+	border-collapse: collapse;	
+	.row {
+		margin-bottom: 1em;
+	}
+}
+
+#profile-avatar {
+	position: relative;
+	img {
+		height: 240px;
+		width: 240px;
+	}
+}
+
+#about {
+	color: white;
 }
 
 table.mail {

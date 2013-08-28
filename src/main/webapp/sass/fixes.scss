@@ -1,0 +1,12 @@
+.section-container.auto {
+	border-left: none;
+	border-right: none;
+	section.active, .section.active {
+		 > .content {
+			border: none;
+			border-top: 2px solid white;
+			z-index: 100;
+		}
+	}
+	
+}

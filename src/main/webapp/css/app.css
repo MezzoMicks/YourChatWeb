@@ -429,7 +429,7 @@ body {
 
 /* line 249, ../../../../../../../Ruby200/lib/ruby/gems/2.0.0/gems/zurb-foundation-4.2.3/scss/foundation/components/_global.scss */
 body {
-  background: white;
+  background: #20272c;
   color: #222222;
   padding: 0;
   margin: 0;
@@ -545,7 +545,7 @@ select {
   margin-right: auto;
   margin-top: 0;
   margin-bottom: 0;
-  max-width: 768px;
+  max-width: 1024px;
   *zoom: 1;
 }
 /* line 121, ../../../../../../../Ruby200/lib/ruby/gems/2.0.0/gems/zurb-foundation-4.2.3/scss/foundation/components/_global.scss */
@@ -3668,8 +3668,8 @@ form.custom .custom.disabled {
 .section-container, .section-container.auto {
   width: 100%;
   display: block;
-  margin-bottom: 1.25em;
-  border: 1px solid white;
+  margin-bottom: 1em;
+  border: 2px solid white;
   border-top: none;
 }
 /* line 277, ../../../../../../../Ruby200/lib/ruby/gems/2.0.0/gems/zurb-foundation-4.2.3/scss/foundation/components/_section.scss */
@@ -3729,7 +3729,7 @@ form.custom .custom.disabled {
   top: 0;
   width: 100%;
   margin: 0;
-  border-top: solid 1px white;
+  border-top: solid 2px white;
 }
 /* line 130, ../../../../../../../Ruby200/lib/ruby/gems/2.0.0/gems/zurb-foundation-4.2.3/scss/foundation/components/_section.scss */
 .section-container > section > .title a, .section-container > .section > .title a, .section-container.auto > section > .title a, .section-container.auto > .section > .title a {
@@ -3797,7 +3797,7 @@ form.custom .custom.disabled {
 /* line 139, ../../../../../../../Ruby200/lib/ruby/gems/2.0.0/gems/zurb-foundation-4.2.3/scss/foundation/components/_section.scss */
 .section-container.tabs > section > .title, .section-container.tabs > .section > .title {
   width: auto;
-  border: solid 1px white;
+  border: solid 2px white;
   border-right: 0;
   border-bottom: 0;
   position: absolute;
@@ -3810,11 +3810,11 @@ form.custom .custom.disabled {
 }
 /* line 150, ../../../../../../../Ruby200/lib/ruby/gems/2.0.0/gems/zurb-foundation-4.2.3/scss/foundation/components/_section.scss */
 .section-container.tabs > section:last-child .title, .section-container.tabs > .section:last-child .title {
-  border-right: solid 1px white;
+  border-right: solid 2px white;
 }
 /* line 152, ../../../../../../../Ruby200/lib/ruby/gems/2.0.0/gems/zurb-foundation-4.2.3/scss/foundation/components/_section.scss */
 .section-container.tabs > section .content, .section-container.tabs > .section .content {
-  border: solid 1px white;
+  border: solid 2px white;
   position: absolute;
   z-index: 10;
   display: none;
@@ -3893,7 +3893,7 @@ form.custom .custom.disabled {
   /* line 139, ../../../../../../../Ruby200/lib/ruby/gems/2.0.0/gems/zurb-foundation-4.2.3/scss/foundation/components/_section.scss */
   .section-container.auto > section > .title, .section-container.auto > .section > .title {
     width: auto;
-    border: solid 1px white;
+    border: solid 2px white;
     border-right: 0;
     border-bottom: 0;
     position: absolute;
@@ -3906,11 +3906,11 @@ form.custom .custom.disabled {
   }
   /* line 150, ../../../../../../../Ruby200/lib/ruby/gems/2.0.0/gems/zurb-foundation-4.2.3/scss/foundation/components/_section.scss */
   .section-container.auto > section:last-child .title, .section-container.auto > .section:last-child .title {
-    border-right: solid 1px white;
+    border-right: solid 2px white;
   }
   /* line 152, ../../../../../../../Ruby200/lib/ruby/gems/2.0.0/gems/zurb-foundation-4.2.3/scss/foundation/components/_section.scss */
   .section-container.auto > section .content, .section-container.auto > .section .content {
-    border: solid 1px white;
+    border: solid 2px white;
     position: absolute;
     z-index: 10;
     display: none;
@@ -3934,7 +3934,7 @@ form.custom .custom.disabled {
 
   /* line 299, ../../../../../../../Ruby200/lib/ruby/gems/2.0.0/gems/zurb-foundation-4.2.3/scss/foundation/components/_section.scss */
   .section-container.vertical-tabs {
-    border: 1px solid white;
+    border: 2px solid white;
     position: relative;
   }
   /* line 303, ../../../../../../../Ruby200/lib/ruby/gems/2.0.0/gems/zurb-foundation-4.2.3/scss/foundation/components/_section.scss */
@@ -4006,7 +4006,7 @@ form.custom .custom.disabled {
   .section-container.vertical-tabs section > .title,
   .section-container.vertical-tabs .section > .title {
     position: absolute;
-    border-top: solid 1px white;
+    border-top: solid 2px white;
     width: 12.5em;
   }
   /* line 181, ../../../../../../../Ruby200/lib/ruby/gems/2.0.0/gems/zurb-foundation-4.2.3/scss/foundation/components/_section.scss */
@@ -4020,7 +4020,7 @@ form.custom .custom.disabled {
     display: block;
     position: relative;
     left: 12.5em;
-    border-left: solid 1px white;
+    border-left: solid 2px white;
     z-index: 10;
   }
   /* line 194, ../../../../../../../Ruby200/lib/ruby/gems/2.0.0/gems/zurb-foundation-4.2.3/scss/foundation/components/_section.scss */
@@ -4098,7 +4098,7 @@ form.custom .custom.disabled {
   /* line 209, ../../../../../../../Ruby200/lib/ruby/gems/2.0.0/gems/zurb-foundation-4.2.3/scss/foundation/components/_section.scss */
   .section-container.vertical-nav > section > .title, .section-container.vertical-nav > .section > .title {
     border-top: none;
-    border: solid 1px white;
+    border: solid 2px white;
   }
   /* line 213, ../../../../../../../Ruby200/lib/ruby/gems/2.0.0/gems/zurb-foundation-4.2.3/scss/foundation/components/_section.scss */
   .section-container.vertical-nav > section > .title a, .section-container.vertical-nav > .section > .title a {
@@ -4121,14 +4121,14 @@ form.custom .custom.disabled {
     top: 0px;
     z-index: 999;
     min-width: 12.5em;
-    border: solid 1px white;
+    border: solid 2px white;
   }
 
   /* line 313, ../../../../../../../Ruby200/lib/ruby/gems/2.0.0/gems/zurb-foundation-4.2.3/scss/foundation/components/_section.scss */
   .section-container.horizontal-nav {
     position: relative;
     background: #7e909d;
-    border: 1px solid white;
+    border: 2px solid white;
   }
   /* line 317, ../../../../../../../Ruby200/lib/ruby/gems/2.0.0/gems/zurb-foundation-4.2.3/scss/foundation/components/_section.scss */
   .section-container.horizontal-nav > section, .section-container.horizontal-nav > .section {
@@ -4187,7 +4187,7 @@ form.custom .custom.disabled {
   /* line 240, ../../../../../../../Ruby200/lib/ruby/gems/2.0.0/gems/zurb-foundation-4.2.3/scss/foundation/components/_section.scss */
   .section-container.horizontal-nav > section > .title, .section-container.horizontal-nav > .section > .title {
     width: auto;
-    border: solid 1px white;
+    border: solid 2px white;
     border-left: 0;
     top: -1px;
     position: absolute;
@@ -4209,15 +4209,15 @@ form.custom .custom.disabled {
     left: 0;
     top: -2px;
     min-width: 12.5em;
-    border: solid 1px white;
+    border: solid 2px white;
   }
 }
 /* line 328, ../../../../../../../Ruby200/lib/ruby/gems/2.0.0/gems/zurb-foundation-4.2.3/scss/foundation/components/_section.scss */
 .no-js .section-container.auto, .no-js .section-container.accordion, .no-js .section-container.tabs, .no-js .section-container.vertical-tabs, .no-js .section-container.vertical-nav, .no-js .section-container.horizontal-nav {
   width: 100%;
   display: block;
-  margin-bottom: 1.25em;
-  border: 1px solid white;
+  margin-bottom: 1em;
+  border: 2px solid white;
   border-top: none;
 }
 /* line 332, ../../../../../../../Ruby200/lib/ruby/gems/2.0.0/gems/zurb-foundation-4.2.3/scss/foundation/components/_section.scss */
@@ -4277,7 +4277,7 @@ form.custom .custom.disabled {
   top: 0;
   width: 100%;
   margin: 0;
-  border-top: solid 1px white;
+  border-top: solid 2px white;
 }
 /* line 130, ../../../../../../../Ruby200/lib/ruby/gems/2.0.0/gems/zurb-foundation-4.2.3/scss/foundation/components/_section.scss */
 .no-js .section-container.auto > section > .title a, .no-js .section-container.auto > .section > .title a, .no-js .section-container.accordion > section > .title a, .no-js .section-container.accordion > .section > .title a, .no-js .section-container.tabs > section > .title a, .no-js .section-container.tabs > .section > .title a, .no-js .section-container.vertical-tabs > section > .title a, .no-js .section-container.vertical-tabs > .section > .title a, .no-js .section-container.vertical-nav > section > .title a, .no-js .section-container.vertical-nav > .section > .title a, .no-js .section-container.horizontal-nav > section > .title a, .no-js .section-container.horizontal-nav > .section > .title a {
@@ -4327,7 +4327,7 @@ form.custom .custom.disabled {
   line-height: 32px;
   position: relative;
   background: #0e0e29;
-  margin-bottom: 0px;
+  margin-bottom: 0;
 }
 /* line 92, ../../../../../../../Ruby200/lib/ruby/gems/2.0.0/gems/zurb-foundation-4.2.3/scss/foundation/components/_top-bar.scss */
 .top-bar ul {
@@ -4647,7 +4647,7 @@ form.custom .custom.disabled {
 
   /* line 382, ../../../../../../../Ruby200/lib/ruby/gems/2.0.0/gems/zurb-foundation-4.2.3/scss/foundation/components/_top-bar.scss */
   .contain-to-grid .top-bar {
-    max-width: 768px;
+    max-width: 1024px;
     margin: 0 auto;
   }
 
@@ -6734,18 +6734,18 @@ a.th {
     position: inherit;
   }
 }
-/* line 1, ../sass/_chat.scss */
+/* line 4, ../sass/_chat.scss */
 html, body {
   height: 100%;
-  background: #fff;
+  background: #20272C;
 }
 
-/* line 6, ../sass/_chat.scss */
+/* line 9, ../sass/_chat.scss */
 textarea {
   resize: none;
 }
 
-/* line 10, ../sass/_chat.scss */
+/* line 13, ../sass/_chat.scss */
 .full-height {
   /* 	position: absolute; */
   /* 	top: 0px; */
@@ -6753,36 +6753,43 @@ textarea {
   /* 	margin-bottom: 100px; */
 }
 
-/* line 17, ../sass/_chat.scss */
+/* line 20, ../sass/_chat.scss */
 #chat {
   position: relative;
   background: #FFC073;
 }
 
-/* line 22, ../sass/_chat.scss */
+/* line 25, ../sass/_chat.scss */
 #chat-input {
   position: absolute;
   left: 0;
   bottom: 0;
   /* 	height: 2.8em; */
   /* 	line-height: 2.8em; */
-  background: #738B9D;
+  background: #738b9d;
   width: 100%;
   padding: 0.4em;
 }
 
-/* line 34, ../sass/_chat.scss */
+/* line 36, ../sass/_chat.scss */
+#signal {
+  width: 12px;
+  height: 12px;
+}
+
+/* line 41, ../sass/_chat.scss */
 #talk form {
   margin-bottom: 0;
 }
 
-/* line 38, ../sass/_chat.scss */
+/* line 45, ../sass/_chat.scss */
 #sidebar {
   background: #20272C;
   color: white;
+  border-right: 2px solid white;
 }
 
-/* line 43, ../sass/_chat.scss */
+/* line 51, ../sass/_chat.scss */
 #chat-screen {
   position: relative;
   width: 100%;
@@ -6790,26 +6797,53 @@ textarea {
   overflow-y: scroll;
 }
 
-/* line 50, ../sass/_chat.scss */
+/* line 58, ../sass/_chat.scss */
+#profile-box {
+  background: #738b9d;
+  margin-top: 1em;
+  border: 1px solid white;
+  border-collapse: collapse;
+}
+/* line 63, ../sass/_chat.scss */
+#profile-box .row {
+  margin-bottom: 1em;
+}
+
+/* line 68, ../sass/_chat.scss */
+#profile-avatar {
+  position: relative;
+}
+/* line 70, ../sass/_chat.scss */
+#profile-avatar img {
+  height: 240px;
+  width: 240px;
+}
+
+/* line 76, ../sass/_chat.scss */
+#about {
+  color: white;
+}
+
+/* line 80, ../sass/_chat.scss */
 table.mail {
   width: 100%;
   table-layout: fixed;
 }
-/* line 54, ../sass/_chat.scss */
+/* line 84, ../sass/_chat.scss */
 table.mail tr td {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-/* line 60, ../sass/_chat.scss */
+/* line 90, ../sass/_chat.scss */
 table.mail tr.unread td {
   font-weight: bold;
 }
-/* line 64, ../sass/_chat.scss */
+/* line 94, ../sass/_chat.scss */
 table.mail tr td.date {
   width: 10em;
 }
-/* line 68, ../sass/_chat.scss */
+/* line 98, ../sass/_chat.scss */
 table.mail tr td.delete {
   width: 2em;
 }

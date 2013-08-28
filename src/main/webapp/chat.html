@@ -7,17 +7,20 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width" />
+<link id="favicon" rel="icon" href="favicon.ico" type="image/x-icon">
 <title>YourChat</title>
 <link rel="stylesheet" href="css/app.css" />
 <!--[if lt IE 8]><link rel="stylesheet" href="css/font-awesome-ie7.min.css" /><![endif] -->
 <!--[if gt IE 8]><! -->
 <link rel="stylesheet" href="css/font-awesome.min.css" />
+<link rel="stylesheet" href="css/fixes.css" />
 <!--<![endif] -->
 <script src="js/vendor/custom.modernizr.js"></script>
 <script src="js/vendor/jquery.js"></script>
 <script src="js/jquery-ui.min.js"></script>
 <script src="js/jquery-ui.offcanvas.js"></script>
 <script src="js/foundation.min.js"></script>
+<script src="js/chat.js"></script>
 <script>
 	function chatResize() {
 		var $chat = $('#chat');
@@ -27,10 +30,6 @@
 		$('#sidebar').css('height', chatHeight);
 		$('#chat-screen').css('height', chatHeight - $talk.outerHeight());
 	}
-	$().ready(function() {
-		$(document).foundation();
-	});
-	$(window).resize(chatResize);
 
 	// Invitation-Dialog /a
 	function createKey() {
@@ -47,18 +46,62 @@
 		}
 	}
 	// Invitation-Dialog /e
+	
+	var window_focus = true;
+	var lastUpdate = 0;
+	var oldTimeout = -1;
+	
+	function chatListen() {
+		listen("<%=listenId%>", function (data) {
+			if (!window_focus && data.length > 0 && data.indexOf('<!--') == -1) {
+				$("#favicon").remove();
+				$('head').append('<link id="favicon" rel="icon" href="favicon_talky.gif" type="image/x-icon">');
+			}
+			$('#chat-screen').append(data);
+			oldTimeout = window.setTimeout(function() { chatListen() }, 500);
+			$('#signal').attr("src", "img/ampel.gif");
+			lastUpdate = new Date().getTime();
+		});
+		if (typeof scrolling == 'undefined' || scrolling) { 
+			$('#chat-screen').scrollTop(5000000); 
+		}
+	}
+
+	function restartListener() {
+		var now = new Date().getTime();
+		if (now - lastUpdate > 10000) {
+			alert('restarting');
+			window.clearTimeout(oldTimeout);
+			chatListen();
+		}
+	}
+
+	$().ready(function() {
+		$(document).foundation();
+		$(window).focus(function() {
+			$("#favicon").remove();
+			$('head').append('<link id="favicon" rel="icon" href="favicon.ico" type="image/x-icon">');
+			window_focus = true;
+		});
+		$(window).blur(function() {
+			window_focus = false;
+		});
+		chatListen();
+		$('#signalLink').click(restartListener);
+	});
+	$(window).resize(chatResize);
 </script>
 </head>
 <body>
 	<header id="header">
 		<nav class="top-bar">
 			<ul class="title-area">
-				<li><a class="general offcanvas-button"
-					style="font-size: 18px; color: white; float: left; padding: 4px;"
-					href="#sidebar"><i class="icon-tasks"></i><span></span></a></li>
+				<li>
+					<a class="general offcanvas-button" style="font-size: 18px; color: white; float: left; padding: 4px;" href="#sidebar"><i class="icon-tasks"></i><span></span></a></li>
 				<!-- Title Area -->
 				<li class="name">
 					<h1>
+						<a href="#" id="signalLink"><img src="" id="signal" title="Status"/></a>
 						<a href="#">&nbsp;</a>
 					</h1>
 				</li>
@@ -82,86 +125,18 @@
 			</section>
 		</nav>
 	</header>
-	<!-- 	<div class="row"> -->
-	<div id="chat" class="full-height small-12 large-9 column">
-		<div id="chat-screen">
-			<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</p>
-
-			<p>Aenean commodo ligula eget dolor.</p>
-
-			<p>Aenean massa.</p>
-
-			<p>Cum sociis natoque penatibus et magnis dis parturient montes,
-				nascetur ridiculus mus.</p>
-
-			<p>Donec quam felis, ultricies nec, pellentesque eu, pretium
-				quis, sem.</p>
-
-			<p>Nulla consequat massa quis enim.</p>
-
-			<p>Donec pede justo, fringilla vel, aliquet nec, vulputate eget,
-				arcu.</p>
-
-			<p>In enim justo, rhoncus ut, imperdiet a, venenatis vitae,
-				justo.</p>
-
-			<p>Nullam dictum felis eu pede mollis pretium.</p>
-
-			<p>Integer tincidunt.</p>
-
-			<p>Cras dapibus.</p>
-
-			<p>Vivamus elementum semper nisi.</p>
-
-			<p>Aenean vulputate eleifend tellus.</p>
-
-			<p>Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac,
-				enim.</p>
-
-			<p>Aliquam lorem ante, dapibus in, viverra quis, feugiat a,
-				tellus.</p>
-
-			<p>Phasellus viverra nulla ut metus varius laoreet.</p>
-
-			<p>Quisque rutrum.</p>
-
-			<p>Aenean imperdiet.</p>
-
-			<p>Etiam ultricies nisi vel augue.</p>
-
-			<p>Curabitur ullamcorper ultricies nisi.</p>
-
-			<p>Nam eget dui.</p>
-
-			<p>Etiam rhoncus.</p>
-
-			<p>Maecenas tempus, tellus eget condimentum rhoncus, sem quam
-				semper libero, sit amet adipiscing sem neque sed ipsum.</p>
-
-			<p>Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id,
-				lorem.</p>
-
-			<p>Maecenas nec odio et ante tincidunt tempus.</p>
-
-			<p>Donec vitae sapien ut libero venenatis faucibus.</p>
-
-			<p>Nullam quis ante.</p>
-
-			<p>Etiam sit amet orci eget eros faucibus tincidunt.</p>
-
-			<p>Duis leo.</p>
-
-			<p>Sed fringilla mauris sit amet nibh.</p>
-
-			<p>Donec sodales sagittis magna.</p>
-
-			<p>Sed consequat, leo eget bibendum sodales, augue velit cursus
-				nunc,</p>
+	<div class="row">
+	<div class="large-9 small-12 columns">
+		<div id="chat" class="full-height">
+			<div id="chat-screen">
+			</div>
 		</div>
-		<div id="chat-input">
+		<div id="chat-input" class="large-12 columns">
 			<form class="custom">
 				<div class="row">
-					<input type="text">
+					<div class="small-12 large-9 columns left">
+						<input type="text">
+					</div>
 				</div>
 				<div class="row">
 					<div class="small-5 large-3 columns left">
@@ -185,10 +160,9 @@
 				</div>
 			</form>
 		</div>
-		>
-	</div>
-	<div id="sidebar" class="offcanvas left small-12 large-3 columns">
-		<div class="section-container auto" data-section data-options="one_up: false; deep_linking: true">
+	</div>	
+		<div id="sidebar" class="offcanvas left small-12 large-3 columns">
+			<div class="section-container auto" data-section data-options="one_up: false; deep_linking: true">
 			<section>
 				<p class="title" data-section-title>
 					<a href="#users"><i class="icon-group"></i>&nbsp;Users</a>
@@ -205,7 +179,9 @@
 					<p>Content of section 2.</p>
 				</div>
 			</section>
+			</div>
 		</div>
+		
 	</div>
 	
 	<div id="settingsDialog" class="reveal-modal">
@@ -223,9 +199,6 @@
 					<select id="fontSelector" onchange="fontChange()" contenteditable="false"></select>
 				</div>
 			</div>
-	    	<label for="asyncCheck">
-	    	 	<input type="checkbox" id="asyncCheck" <%=asyncmode ? "checked='checked'" :"" %> /><span class="custom checkbox"></span> Alternate Chatmode</label>
-			</label>
 		</form>
 		<a href="#" class="small button" onclick="createKey()">Invite</a> <a
 			class="close-reveal-modal">&#215;</a>

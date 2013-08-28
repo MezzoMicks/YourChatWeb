@@ -28,7 +28,7 @@ $em-base: 16px !default;
 
 $default-float: left;
 
-// $body-bg: #fff;
+$body-bg: #20272c;
 // $body-font-color: #222;
 // $body-font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
 // $body-font-weight: normal;
@@ -113,7 +113,7 @@ $small-screen: 768px;
 // Grid Variables
 //
 
-$row-width: $small-screen;
+$row-width: 1024px;
 $column-gutter: 0;
 // $total-columns: 12;
 
@@ -1008,7 +1008,7 @@ $section-title-bg-hover: darken($section-title-bg, $section-function-factor/2);
 
 // Border size
 
-$section-border-size: 1px;
+$section-border-size: 2px;
 $section-border-style: solid;
 $section-border-color: #fff;
 
@@ -1021,7 +1021,7 @@ $section-font-size: emCalc(14px);
 $section-content-bg: #20272C;
 // $section-vertical-nav-min-width: emCalc(200px);
 // $section-vertical-tabs-title-width: emCalc(200px);
-// $section-bottom-margin: emCalc(20px);
+$section-bottom-margin: 1em;
 
 // $title-selector: ".title";
 // $content-selector: ".content";
@@ -1208,7 +1208,7 @@ $topbar-bg: #0E0E29 !default;
 // Height and margin
 
 $topbar-height: 32px;
-$topbar-margin-bottom: 0px;
+$topbar-margin-bottom: 0;
 
 // Control Input height for top bar
 

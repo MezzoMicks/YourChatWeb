@@ -12,10 +12,51 @@
 <!--[if lt IE 8]><link rel="stylesheet" href="css/font-awesome-ie7.min.css" /><![endif] -->
 <!--[if gt IE 8]><! -->
 <link rel="stylesheet" href="css/font-awesome.min.css" />
+<link rel="stylesheet" href="css/fixes.css" />
 <!--<![endif] -->
-<script src="js/vendor/custom.modernizr.js"></script>
-<script src="js/vendor/jquery.js"></script>
-<script src="js/foundation.min.js"></script>
+<script type="text/javascript" src="js/vendor/custom.modernizr.js"></script>
+<script type="text/javascript" src="js/vendor/jquery.js"></script>
+<script type="text/javascript" src="js/edit.js"></script>
+<script type="text/javascript" src="js/foundation.min.js"></script>
+<script type="text/javascript">
+	function saveLocation() {
+		var locationDiv = $('#location');
+		doSaveProfile('location', locationDiv.find('input').val());
+		edit(locationDiv, false, true);
+		return false;
+	}
+
+	function saveAbout() {
+		var aboutDiv = $('#about');
+		doSaveProfile('about', aboutDiv.find('textArea').val());
+		edit(aboutDiv, false, true);
+		return false;
+	}
+
+	function saveBirthday() {
+		var birthdayDiv = $('#birthday');
+		doSaveProfile('birthday', birthdayDiv.find('input').val());
+		edit(birthdayDiv, false, true);
+		return false;
+	}
+
+	function saveAvatar() {
+		var avatarDiv = $('#avatar');
+		avatarDiv.find('form').submit();
+		edit(avatarDiv, false, false);
+		return false;
+	}
+
+	function saveGallery() {
+		var galleryDiv = $('#gallery');
+		galleryDiv.find('form').submit();
+		return false;
+	}
+	
+	$().ready(function() {
+		$(document).foundation();
+	});
+</script>
 </head>
 <body>
 	<header id="header">
@@ -33,23 +74,113 @@
 			<section class="top-bar-section">
 				<!-- Right Nav Section -->
 				<ul class="right">
-					<li><a href="#" data-reveal-id="mailInboxDialog"><i class="icon-envelope"></i>&nbsp;Send&nbsp;Mail</a></li>
-					<li><a href="#" data-reveal-id="settingsDialog"><i class="icon-wrench"></i>&nbsp;Edit</a></li>
+					<li><a href="#" data-reveal-id="mailInboxDialog"><i
+							class="icon-envelope"></i>&nbsp;Send&nbsp;Mail</a></li>
+					<li><a href="#" data-reveal-id="settingsDialog"><i
+							class="icon-wrench"></i>&nbsp;Edit</a></li>
 					<li><a href="#"><i class="icon-remove"></i>&nbsp;Close</a></li>
 				</ul>
 			</section>
 		</nav>
 	</header>
 	<div id="profile-box" class="row">
-		<div class="large-4-columns">
-		
-		</div>
-		<div class="large-8-columns">
-		
-		</div>
-	</div>
-	<div class="row">
-	</div>
 	
+		<div class="row">
+			<div id="profile-avatar" class="editable large-4 columns">
+				<a class="editable-view pull-left" href="#"> <img
+					class="th radius" src="http://placekitten.com/240/240"
+					alt="Kitty's Avatar" onclick="showImage(this)" data-id="123"
+					data-title="Kitty's Avatarara">
+				</a>
+				<div class="editable-editor">
+					<form id="avatarForm" action="input" method="post">
+						<div class="fileupload fileupload-new" data-provides="fileupload">
+							<div class="fileupload-new">
+								<img src="<%=imageURL%>" />
+							</div>
+							<div class="fileupload-preview fileupload-exists thumbnail"
+								style="width: 240px; height: 240px;"></div>
+							<div style="position: absolute; bottom: 0; left: 0">
+								<span class="btn btn-file" style="float: left"> <span
+									class="fileupload-new"><i class="icon-file"></i></span> <span
+									class="fileupload-exists"><i class="icon-refresh"></i></span> <input
+									type="file" name="avatarfile" />
+								</span> <input type="hidden" name="action" value="profile" /> <input
+									type="hidden" name="image" value="avatar" /> <input
+									class="fileupload-exists" type="text" name="title" value=""
+									placeholder="Title" style="width: 180px; height: 25px;" />
+							</div>
+						</div>
+					</form>
+					<div id="avatarProgress" class="progress progress-striped active"
+						style="visibility: hidden">
+						<div class="bar" style="width: 0%;"></div>
+					</div>
+				</div>
+				<div style="position: absolute; top: 5px; right: 40px;">
+					<span class="editable-isviewing"
+						style="position: absolute; width: 16px; background-color: #fff; border: 1px dashed #ccc">
+						<a href="#" onclick="edit($('#avatar'), true, true)"><i
+							class="icon-pencil"></i></a>
+					</span> <span class="editable-isediting"
+						style="position: absolute; width: 32px; background-color: #fff; border: 1px dashed #ccc">
+						<a href="#" onclick="saveAvatar();"><i class="icon-ok"></i></a> <a
+						href="#" onclick="edit($('#avatar'), false, false);"><i
+							class="icon-remove"></i></a>
+					</span>
+				</div>
+			</div>
+			<div class="large-8 columns">
+				<h2>Kitty</h2>
+				<div class="editable" id="location" style="position: relative">
+					<p class="editable-view" style="height: 1em">Scratchpost</h2>
+					<input type="text" style="width: 100%; height: 28px" class="editable-editor" placeholder="Additional Info">
+					<div style="position: absolute; top: 0; right: 40px;">
+						<span class="editable-isviewing"
+							style="position: absolute; width: 20px"> <a href="#"
+							onclick="edit($('#location'), true, true)"><i
+								class="icon-pencil"></i></a>
+						</span> <span class="editable-isediting"
+							style="position: absolute; width: 40px"> <a href="#"
+							onclick="saveLocation();"><i class="icon-ok"></i></a> <a href="#"
+							onclick="edit($('#location'), false, false);"><i
+								class="icon-remove"></i></a>
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="large-12 columns">
+				<div class="section-container auto" data-section>
+				  <section class="editable">
+				    <p class="title" data-section-title><a href="#about">Section 1</a></p>
+				    <div id="about" class="content" data-section-content>
+				      	<p class="editable-view">Lorem Ipsum,bacon power kitty</p>
+						<textArea class="editable-editor" style="width: 100%; height: 240px; overflow: auto; resize: none;">
+						</textArea>
+						<div style="position: absolute; top: 0; right: 40px;">
+							<span class="editable-isviewing" style="position: absolute; width:20px">
+								<a href="#" onclick="edit($('#about'), true, true)"><i class="icon-pencil"></i></a>
+							</span> 
+							<span class="editable-isediting" style="position: absolute; width:40px">
+								<a href="#" onclick="saveAbout();"><i class="icon-ok"></i></a> 
+								<a href="#" onclick="edit($('#about'), false, false);"><i class="icon-remove"></i></a>
+							</span>
+						</div>
+				    </div>
+				  </section>
+				  <section>
+				    <p class="title" data-section-title><a href="#gallery">Section 2</a></p>
+				    <div class="content" data-section-content>
+				      <p>Content of section 2.</p>
+				    </div>
+				  </section>
+				</div>
+			</div>
+		</div>
+	</div>
+		
+
 </body>
 </html>

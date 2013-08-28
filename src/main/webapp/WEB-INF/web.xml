@@ -1,7 +1,28 @@
-<!DOCTYPE web-app PUBLIC
- "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
- "http://java.sun.com/dtd/web-app_2_3.dtd" >
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+      version="3.0">
+      
+	<display-name>YourChat-WebApp</display-name>
+	<listener>
+		<listener-class>de.deyovi.chat.web.ChatContext</listener-class>
+	</listener>
+	<servlet>
+		<servlet-name>ChatFacade</servlet-name>
+		<servlet-class>de.deyovi.chat.web.ChatFacade</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ChatFacade</servlet-name>
+		<url-pattern>/chat/*</url-pattern>
+	</servlet-mapping>
 
-<web-app>
-  <display-name>Archetype Created Web Application</display-name>
+	<data-source>
+		<name>PSQLThemis</name>
+		<class-name>org.postgresql.Driver</class-name>
+		<url>jdbc:postgresql://themis:5432/yourchat</url>
+		<user>chat</user>
+		<password>chat</password>
+	</data-source>
 </web-app>
