@@ -10,6 +10,6 @@ public interface Controller {
 
   public Mapping[] getMappings();
 
-  public Object process(MatchedMapping path, ChatUser user, HttpServletRequest request, HttpServletResponse response);
+  public ControllerOutput process(MatchedMapping path, ChatUser user, HttpServletRequest request, HttpServletResponse response);
 
 }

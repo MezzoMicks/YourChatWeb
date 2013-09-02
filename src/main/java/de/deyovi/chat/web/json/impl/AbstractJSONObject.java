@@ -36,6 +36,20 @@ public abstract class AbstractJSONObject implements JSONObject {
 	}
 	
 	@Override
+	public int getSize() {
+		JSONElement[] elements = getElements();
+		// first we add the amount of commata
+		int sum = elements.length - 1;
+		// then 2 for the two curly brackets
+		sum += 2;
+		// and the size of each element
+		for (JSONElement element : elements) {
+			sum += element.getSize();
+		}
+		return sum;
+	}
+	
+	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		try {

@@ -51,4 +51,21 @@ public class DefaultJSONElement extends AbstractJSONElement {
 		return data.toArray(new JSONData[data.size()]);
 	}
 	
+	@Override
+	public int getSize() {
+		int sum;
+		// first we add the amount of commata, needed if there's an array
+		if ((sum = data.size() - 1) > 0) {
+			// ...and we add the amount for the edgy brackes if it's an array
+			sum += 2;
+		}
+		// then we add the length of the key + 2 for quotes
+		sum += getKey().length() + 2;
+		// and the size of each data-object of course
+		for (JSONData singleData : data) {
+			sum += singleData.getSize();
+		}
+		return sum;
+	}
+	
 }

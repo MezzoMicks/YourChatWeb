@@ -1,5 +1,8 @@
 package de.deyovi.chat.web.controller.impl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -12,8 +15,12 @@ import de.deyovi.chat.core.services.ChatUserService;
 import de.deyovi.chat.core.services.CommandProcessorService;
 import de.deyovi.chat.core.services.impl.DefaultChatUserService;
 import de.deyovi.chat.core.services.impl.DefaultCommandProcessorService;
+import de.deyovi.chat.core.utils.ChatConfiguration;
 import de.deyovi.chat.core.utils.PasswordUtil;
 import de.deyovi.chat.web.SessionParameters;
+import de.deyovi.chat.web.controller.ControllerJSONOutput;
+import de.deyovi.chat.web.controller.ControllerOutput;
+import de.deyovi.chat.web.controller.ControllerViewOutput;
 import de.deyovi.chat.web.controller.Mapping;
 import de.deyovi.chat.web.controller.Mapping.MatchedMapping;
 import de.deyovi.chat.web.json.impl.DefaultJSONObject;
@@ -26,11 +33,12 @@ import de.deyovi.chat.web.json.impl.DefaultJSONObject;
 public class SessionController extends AbstractFormController {
 
 	private static final Logger logger = LogManager.getLogger(SessionController.class);
+	private static final Mapping PATH_CHAT = new DefaultMapping("/");
 	private static final Mapping PATH_LOGIN = new DefaultMapping("login");
 	private static final Mapping PATH_LOGOUT = new DefaultMapping("logout");
 	private static final Mapping PATH_REGISTER = new DefaultMapping("register");
 	private static final Mapping PATH_SUGAR = new DefaultMapping("sugar");
-	private static final Mapping[] PATHES = new Mapping[] { PATH_LOGIN, PATH_LOGOUT, PATH_REGISTER, PATH_SUGAR };
+	private static final Mapping[] PATHES = new Mapping[] { PATH_CHAT, PATH_LOGIN, PATH_LOGOUT, PATH_REGISTER, PATH_SUGAR };
 
 	private static final String PARAM_ROOM = "room";
 	private static final String PARAM_MESSAGE = "message";
@@ -45,9 +53,11 @@ public class SessionController extends AbstractFormController {
 	}
 	
 	@Override
-	public Object process(MatchedMapping matchedPath, ChatUser user, HttpServletRequest request, HttpServletResponse response) {
+	public ControllerOutput process(MatchedMapping matchedPath, ChatUser user, HttpServletRequest request, HttpServletResponse response) {
 		Mapping path = matchedPath.getMapping();
-		if (path == PATH_LOGIN) {
+		if (path == PATH_CHAT) {
+			return redirectUser(request.getSession(), user);
+		} else if (path == PATH_LOGIN) {
 			return login(user, request, response);
 		} else if (path == PATH_LOGOUT) {
 			return logout(request, response);
@@ -56,11 +66,11 @@ public class SessionController extends AbstractFormController {
 		} else if (path == PATH_SUGAR) {
 			return sugar(request);
 		} else {
-			return false;
+			return null;
 		}
 	}
 		
-	private Object logout(HttpServletRequest request, HttpServletResponse response) {
+	private ControllerOutput logout(HttpServletRequest request, HttpServletResponse response) {
 		HttpSession session = request.getSession();
 		if (session != null) {
 			ChatUser user = (ChatUser) session.getAttribute(SessionParameters.USER);
@@ -71,20 +81,20 @@ public class SessionController extends AbstractFormController {
 					chatUserService.logout(user);
 					session.setAttribute(SessionParameters.USER, null);
 					session.invalidate();
-					return "redirect:login.jsp";
+					return new ControllerViewOutput("login.jsp", null);
 				} else {
-					return false;
+					return null;
 				}
 			} else {
 				logger.error("Logout without user!");
-				return "redirect:login.jsp";
+				return new ControllerViewOutput("login.jsp", null);
 			}
 		} else {
-			return false;
+			return null;
 		}
 	}
 	
-	private String register(HttpServletRequest request, HttpServletResponse response) {
+	private ControllerOutput register(HttpServletRequest request, HttpServletResponse response) {
 		HttpSession session = request.getSession();
 		if (session != null) {
 			String username = request.getParameter("username");
@@ -96,11 +106,11 @@ public class SessionController extends AbstractFormController {
 			return redirectUser(session, newUser);
 		} else {
 			logger.error("Register without session!");
-			return "redirect:login.jsp";
+			return new ControllerViewOutput("login.jsp", null);
 		}
 	}
 	
-	private String login(ChatUser user, HttpServletRequest request, HttpServletResponse response) {
+	private ControllerOutput login(ChatUser user, HttpServletRequest request, HttpServletResponse response) {
 		HttpSession session = request.getSession();
 		if (session != null) {
 			String username = request.getParameter("username");
@@ -114,37 +124,39 @@ public class SessionController extends AbstractFormController {
 			} else {
 				session.invalidate();
 				logger.error("Sugar didn't match user: got username '" + username + "' expected sugar '" + sugar + "'. Mixed up sessions?");
-				return "redirect:login.jsp";
+				return new ControllerViewOutput("login.jsp", null);
 			}
 		} else {
 			logger.error("Login without session!");
-			return "redirect:login.jsp";
+			return new ControllerViewOutput("login.jsp", null);
 		}
 	}
 
-	private String redirectUser(HttpSession session, ChatUser newUser) {
+	private ControllerOutput redirectUser(HttpSession session, ChatUser newUser) {
 		if (newUser == null) {
-			return "redirect:login.jsp";
+			Map<String, Object> loginParameters = new HashMap<String, Object>(1);
+			loginParameters.put("keyRequired", ChatConfiguration.isInvitationRequired());
+			return new ControllerViewOutput("login.jsp", loginParameters);
 		} else {
 			session.setAttribute(SessionParameters.USER, newUser);
 			String logoutKey = Long.toHexString(System.currentTimeMillis());
 			session.setAttribute(SessionParameters.LOGOUT_KEY, logoutKey);
 			session.setMaxInactiveInterval(-1);
-			return "redirect:";
+			return new ControllerViewOutput("chat.jsp", null);
 		}
 	}
 
-	public Object sugar(HttpServletRequest request) {
+	public ControllerOutput sugar(HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		if (session != null) {
 			String sugar = PasswordUtil.getSugar();
 			session = request.getSession(true);
 			String userName = request.getParameter("user");
 			session.setAttribute(SessionParameters.SUGAR, sugar + userName);
-			return new DefaultJSONObject("sugar", sugar);
+			return new ControllerJSONOutput(new DefaultJSONObject("sugar", sugar));
 		} else {
 			logger.warn("Sugarrequest without Session from User " + session.getAttribute(SessionParameters.USER));
-			return false;
+			return null;
 		}
 	}
 	

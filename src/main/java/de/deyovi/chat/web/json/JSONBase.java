@@ -16,4 +16,9 @@ public interface JSONBase extends Serializable {
 	 */
 	public void appendTo(Appendable appendable) throws IOException;
 	
+	/**
+	 * Returns the amount of characters, needed to represent this object
+	 * @return size in int
+	 */
+	public int getSize();
 }

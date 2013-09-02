@@ -1,24 +1,28 @@
 <%@page import="de.deyovi.chat.core.utils.ChatConfiguration"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<% 
-	boolean keyRequired = ChatConfiguration.isInvitationRequired(); 
-	session.setAttribute("user", null);
-	session.setAttribute("refresh", false);
-%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Login</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<link rel="icon" href="favicon.ico" type="image/x-icon">
-	<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
-	<script type="text/javascript" src="js/jquery.min.js"></script>
-	<script type="text/javascript" src="js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="js/sha256.js"></script>
-	<script type="text/javascript" src="js/chat.js"></script>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width" />
+	<link id="favicon" rel="icon" href="favicon.ico" type="image/x-icon">
+	<title>YourChat</title>
+	<link rel="stylesheet" href="css/app.css" />
+	<!--[if lt IE 8]><link rel="stylesheet" href="css/font-awesome-ie7.min.css" /><![endif] -->
+	<!--[if gt IE 8]><! -->
+	<link rel="stylesheet" href="css/font-awesome.min.css" />
+	<link rel="stylesheet" href="css/fixes.css" />
+	<!--<![endif] -->
+	<script src="js/vendor/custom.modernizr.js"></script>
+	<script src="js/vendor/jquery.js"></script>
+	<script src="js/jquery.form.min.js"></script>
+	<script src="js/jquery-ui.min.js"></script>
+	<script src="js/jquery-ui.offcanvas.js"></script>
+	<script src="js/foundation.min.js"></script>
+	<script src="js/chat.js"></script>
 	<script type="text/javascript">
-
-	var keyRequired = <%=keyRequired%>;
+	var keyRequired = <c:out value="${requestScope.keyRequired}"/>;
 
 	function loginKey(event) {
 		if (event.which == 13) {
@@ -27,7 +31,7 @@
 	}
 	
 	function login() {
-		if ($('#loginTab').hasClass('active')) {
+		if ($('#login').hasClass('active')) {
 			var form = $('#loginForm');
 			var password = $.trim(form.find('input[name="password"]').val());
 			password = sha256_digest(password);
@@ -65,7 +69,8 @@
 		}
 	}
 
-	$(document).ready(function() {
+	$().ready(function() {
+		$(document).foundation();
 		if (sha256_self_test() == false) {
 			$('#loginForm').html("<strong>Login not possible!</strong>");
 			$('#registerForm').html("<strong>Registration not possible!</strong>");
@@ -75,47 +80,50 @@
 </head>
 
 <body>
-	<div class="container" style="margin-top:50px">
 	  <div class="row">
-	    <div class="tab-content span6 offset3  well">
-			<div class="tab-pane fade active in" id="loginTab">
-				<h3>Login</h3>
-				<form id="loginForm" action="session" method="POST">
-					<input type="text" name="username" placeholder="Username">
-					<br /> 
-					<input type="password" name="password" placeholder="Password" onkeydown="loginKey(event)"> 
-					<input type="hidden" name="passwordHash" /> 
-					<input type="hidden" name="action" value="login" />
-				</form>
-			</div>
-			<div class="tab-pane fade in" id="registerTab">
-				<h3>Register</h3>
-				<form id="registerForm" action="session" method="POST">
-					<input type="text" name="username" placeholder="Username">
-					<br /> 
-					<input type="password" name="password" placeholder="Password">
-					<br /> 
-					<input type="password" name="passwordRepeat" placeholder="Password (Again)">
-					<input type="hidden" name="passwordHash" /> 
+	    <div class="large-6 columns">
+	    <div class="section-container auto" data-section data-options="one_up: true; deep_linking: true">
+			<section>
+				<p class="title" data-section-title>
+					<a href="#login"><i class="icon-group"></i>&nbsp;Login</a>
+				</p>
+				<div class="content" data-slug="login" data-section-content>
+					<c:url value="login" var="loginURL"/>
+					<form id="loginForm" class="custom" action="${loginURL}" method="POST">
+						<input type="text" name="username" placeholder="Username">
+						<br /> 
+						<input type="password" name="password" placeholder="Password" onkeydown="loginKey(event)"> 
+						<input type="hidden" name="passwordHash" /> 
+						<input type="hidden" name="action" value="login" />
+						<input type="submit" value="Senden">
+					</form>
+				</div>
+			</section>
+			<section>
+				<p class="title" data-section-title>
+					<a href="#register"><i class="icon-picture"></i>&nbsp;Register</a>
+				</p>
+				<div class="content" data-slug="register" data-section-content>
+					<form id="registerForm" class="custom" action="<c:url value="register"/>" method="POST">
+						<input type="text" name="username" placeholder="Username">
+						<br /> 
+						<input type="password" name="password" placeholder="Password">
+						<br /> 
+						<input type="password" name="passwordRepeat" placeholder="Password (Again)">
+						<input type="hidden" name="passwordHash" /> 
+						<br />
+						<c:if test="${requestScope.keyRequired}">
+							<input type="text" name="key" placeholder="Invite-Key">
+							<input type="hidden" name="keyHash" /> 
+						</c:if>
+						<input type="hidden" name="action" value="register" />
+					</form>
 					<br />
-					<%
-						if (keyRequired) {
-					%>
-					<input type="text" name="key" placeholder="Invite-Key">
-					<input type="hidden" name="keyHash" /> 
-					<%
-						}
-					%>
-					<input type="hidden" name="action" value="register" />
-				</form>
-				<br /> <span class="label label-important" id="registerLabel"></span>
+					<span class="label label-important" id="registerLabel"></span>
+				</div>
+			</section>
 			</div>
-			<ul class="nav nav-pills" style="margin-bottom:0">
-				<li class="active"><a href="#loginTab" data-toggle="tab" onclick="login()">Login</a></li>
-				<li><a href="#registerTab" data-toggle="tab" onclick="register()">Register</a></li>
-			</ul>
 	    </div>
 	  </div>
-	</div>
 </body>
 </html>

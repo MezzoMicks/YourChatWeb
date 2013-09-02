@@ -26,6 +26,8 @@ import de.deyovi.chat.core.services.TranslatorService;
 import de.deyovi.chat.core.services.impl.ResourceTranslatorService;
 import de.deyovi.chat.core.utils.ChatUtils;
 import de.deyovi.chat.web.controller.Controller;
+import de.deyovi.chat.web.controller.ControllerHTMLOutput;
+import de.deyovi.chat.web.controller.ControllerOutput;
 import de.deyovi.chat.web.controller.Mapping;
 import de.deyovi.chat.web.controller.Mapping.MatchedMapping;
 
@@ -122,12 +124,12 @@ public class OutputController implements Controller {
 	}
 
 	@Override
-	public Object process(MatchedMapping path, ChatUser user, HttpServletRequest request, HttpServletResponse response) {
+	public ControllerOutput process(MatchedMapping path, ChatUser user, HttpServletRequest request, HttpServletResponse response) {
 		if (path.equals(PATH_LISTEN)) {
 			output(user, request, response);
-			return 200;
+			return new ControllerHTMLOutput(null);
 		} else {
-			return 302;
+			return null;
 		}
 	}
 

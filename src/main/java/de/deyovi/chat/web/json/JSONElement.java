@@ -20,5 +20,5 @@ public interface JSONElement extends JSONBase {
 	 * @return {@link JSONData}
 	 */
 	public JSONData[] getData();
-	
+
 }

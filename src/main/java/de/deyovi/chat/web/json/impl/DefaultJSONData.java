@@ -24,6 +24,17 @@ public class DefaultJSONData implements JSONData {
 	
 	@Override
 	public void appendTo(Appendable appendable) throws IOException {
+		String appendee = toString();
+		appendable.append(appendee);
+	}
+
+	@Override
+	public int getSize() {
+		return toString().length();
+	}
+	
+	@Override
+	public String toString() {
 		String appendee = null;
 		if (value != null) {
 			if (value instanceof String) {
@@ -47,10 +58,9 @@ public class DefaultJSONData implements JSONData {
 			}
 		}
 		if (appendee == null) {
-			appendable.append("null");
-		} else {
-			appendable.append(appendee);
+			appendee = "null";
 		}
+		return appendee;
 	}
 
 }

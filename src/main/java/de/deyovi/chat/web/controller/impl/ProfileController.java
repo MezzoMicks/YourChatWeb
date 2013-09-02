@@ -15,6 +15,9 @@ import de.deyovi.chat.core.objects.ChatUser;
 import de.deyovi.chat.core.objects.Profile;
 import de.deyovi.chat.core.services.ProfileService;
 import de.deyovi.chat.core.services.impl.DefaultProfileService;
+import de.deyovi.chat.web.controller.ControllerHTMLOutput;
+import de.deyovi.chat.web.controller.ControllerJSONOutput;
+import de.deyovi.chat.web.controller.ControllerOutput;
 import de.deyovi.chat.web.controller.Mapping;
 import de.deyovi.chat.web.controller.Mapping.MatchedMapping;
 import de.deyovi.chat.web.json.JSONObject;
@@ -48,18 +51,18 @@ public class ProfileController extends AbstractFormController {
 		return PATHES;
 	}
 
-	public Object process(MatchedMapping matchedPath, ChatUser user, HttpServletRequest request, HttpServletResponse response) {
+	public ControllerOutput process(MatchedMapping matchedPath, ChatUser user, HttpServletRequest request, HttpServletResponse response) {
 		Mapping path = matchedPath.getMapping();
 		if (path == PATH_DELETE) {
 			delete(user, request);
-			return true;
+			return new ControllerHTMLOutput(null);
 		} else if (path == PATH_CHANGE) {
 			change(user, request);
-			return true;
+			return new ControllerHTMLOutput(null);
 		} else if (path == PATH_ADDIMAGE) {
-			return addImage(user, request);
+			return new ControllerJSONOutput(addImage(user, request));
 		} else if (path == PATH_SETAVATAR) {
-			return setAvatar(user, request);
+			return new ControllerJSONOutput(setAvatar(user, request));
 		} else {
 			return null;
 		}

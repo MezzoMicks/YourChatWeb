@@ -4,7 +4,7 @@ function listen(listenid, callback) {
 	var tS = new Date().getTime();
 	$.ajax({
 		type : "POST",
-		url : "chat/listen",
+		url : "listen",
 		data : {
 			"listenid" : listenid,
 			"output" : "async",

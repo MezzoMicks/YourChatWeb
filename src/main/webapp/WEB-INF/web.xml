@@ -15,7 +15,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>ChatFacade</servlet-name>
-		<url-pattern>/chat/*</url-pattern>
+		<url-pattern>/app/*</url-pattern>
 	</servlet-mapping>
 
 	<data-source>

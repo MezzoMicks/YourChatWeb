@@ -1,10 +1,15 @@
 package de.deyovi.chat.web.controller.impl;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 import de.deyovi.chat.web.controller.Mapping;
 import de.deyovi.chat.web.controller.Method;
 
 public class DefaultMapping implements Mapping, Comparable<Mapping> {
 
+	private final static Logger logger = LogManager.getLogger(DefaultMapping.class);
+	
 	private final String pathAsString;
 	private final Method[] methods;
 
@@ -42,7 +47,8 @@ public class DefaultMapping implements Mapping, Comparable<Mapping> {
 			}
 			if (methodMatch) {
 				// Does the path match?
-				if (pathAsString.startsWith(requestPath)) {
+				logger.info("matching " + pathAsString + " against " + requestPath);
+				if (requestPath.startsWith(pathAsString)) {
 					result = new DefaultMatchedMapping(requestPath, reqMethod);
 				}
 			}

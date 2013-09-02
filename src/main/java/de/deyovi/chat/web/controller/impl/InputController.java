@@ -15,6 +15,8 @@ import de.deyovi.chat.core.services.CommandProcessorService;
 import de.deyovi.chat.core.services.InputProcessorService;
 import de.deyovi.chat.core.services.impl.DefaultCommandProcessorService;
 import de.deyovi.chat.core.services.impl.DefaultInputProcessorService;
+import de.deyovi.chat.web.controller.ControllerHTMLOutput;
+import de.deyovi.chat.web.controller.ControllerOutput;
 import de.deyovi.chat.web.controller.Mapping;
 import de.deyovi.chat.web.controller.Mapping.MatchedMapping;
 
@@ -44,20 +46,20 @@ public class InputController extends AbstractFormController {
 	}
 	
 	@Override
-	public Object process(MatchedMapping matchedPath, ChatUser user, HttpServletRequest request, HttpServletResponse response) {
+	public ControllerOutput process(MatchedMapping matchedPath, ChatUser user, HttpServletRequest request, HttpServletResponse response) {
 		Mapping path = matchedPath.getMapping();
 		if (path == PATH_TALK) {
 			talk(user, request);
-			return true;
+			return new ControllerHTMLOutput(null);
 		} else if (path == PATH_AWAY) {
 			commandService.away(user, !user.isAway());
-			return true;
+			return new ControllerHTMLOutput(null);
 		} else if (path == PATH_JOIN) {
 			Map<String, Object> parameters = getParameters(request);
 			commandService.join(user, (String) parameters.get(PARAM_ROOM));
-			return true;
+			return new ControllerHTMLOutput(null);
 		} else {
-			return false;
+			return null;
 		}
 	}
 	

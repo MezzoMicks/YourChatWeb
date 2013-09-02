@@ -24,6 +24,8 @@ public class DefaultJSONObject extends AbstractJSONObject {
 	// We're using a TreeMap to keep the natural order of elements
 	private final TreeMap<String, JSONElement> elements = new TreeMap<String, JSONElement>();
 	
+	private int size = 0;
+	
 	/**
 	 * For creating an empty {@link JSONObject}
 	 */
@@ -47,7 +49,7 @@ public class DefaultJSONObject extends AbstractJSONObject {
 	public DefaultJSONObject(Map<String, Object> dataMap) {
 		Set<Entry<String,Object>> entries = dataMap.entrySet();
 		for (Entry<String, Object> entry : entries) {
-			elements.put(entry.getKey(), new DefaultJSONElement(entry.getKey(), entry.getValue()));
+			put(entry.getKey(), new DefaultJSONElement(entry.getKey(), entry.getValue()));
 		}
 	}
 	
@@ -60,7 +62,7 @@ public class DefaultJSONObject extends AbstractJSONObject {
 	@Override
 	public JSONObject put(String key) {
 		JSONObject newObject = new DefaultJSONObject();
-		elements.put(key, new DefaultJSONElement(key, newObject));
+		put(key, new DefaultJSONElement(key, newObject));
 		return newObject;
 	}
 	
@@ -68,7 +70,7 @@ public class DefaultJSONObject extends AbstractJSONObject {
 	public JSONObject push(String key, Object value) {
 		JSONElement element = elements.get(key);
 		if (element == null) {
-			elements.put(key, new DefaultJSONElement(key, value));
+			put(key, new DefaultJSONElement(key, value));
 		} else {
 			element.push(value);
 		}
