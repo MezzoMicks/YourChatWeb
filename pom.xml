@@ -72,19 +72,9 @@
 				<artifactId>tomee-maven-plugin</artifactId>
 				<version>1.0.1</version>
 				<configuration>
-					<tomeeVersion>1.5.0</tomeeVersion>
-					<tomeeClassifier>plus</tomeeClassifier>
+					<tomeeVersion>1.5.2</tomeeVersion>
 					<args>-Dopenejb.log.factory=slf4j-log4j12</args>
-					<synchronization>
-				      <extensions>
-				        <extension>.class</extension>
-				        <extension>.html</extension> 
-				        <extension>.jsp</extension> 
-				        <extension>.js</extension> 
-				        <extension>.css</extension> 
-				        <extension>.war</extension> 
-				      </extensions>
-				    </synchronization>
+					<synchronization />
 					<reloadOnUpdate>true</reloadOnUpdate>
 					<libs>
 				        <lib>log4j:log4j:1.2.17</lib>

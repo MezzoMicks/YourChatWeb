@@ -22,6 +22,8 @@
 <script src="js/foundation.min.js"></script>
 <script src="js/chat.js"></script>
 <script>
+	urlPrefix = "<c:out value="${requestScope.urlPrefix}"/>";
+
 	function chatResize() {
 		var $chat = $('#chat');
 		var $talk = $('#chat-input');

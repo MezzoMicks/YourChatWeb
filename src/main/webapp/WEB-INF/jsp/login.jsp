@@ -9,7 +9,8 @@
 	<link id="favicon" rel="icon" href="favicon.ico" type="image/x-icon">
 	<title>YourChat</title>
 	<link rel="stylesheet" href="css/app.css" />
-	<!--[if lt IE 8]><link rel="stylesheet" href="css/font-awesome-ie7.min.css" /><![endif] -->
+	<!--[if lt IE 8]>
+	<link rel="stylesheet" href="css/font-awesome-ie7.min.css" /><![endif] -->
 	<!--[if gt IE 8]><! -->
 	<link rel="stylesheet" href="css/font-awesome.min.css" />
 	<link rel="stylesheet" href="css/fixes.css" />
@@ -20,8 +21,10 @@
 	<script src="js/jquery-ui.min.js"></script>
 	<script src="js/jquery-ui.offcanvas.js"></script>
 	<script src="js/foundation.min.js"></script>
+	<script src="js/sha256.js"></script>
 	<script src="js/chat.js"></script>
 	<script type="text/javascript">
+	urlPrefix = "<c:out value="${requestScope.urlPrefix}"/>";
 	var keyRequired = <c:out value="${requestScope.keyRequired}"/>;
 
 	function loginKey(event) {
@@ -31,20 +34,18 @@
 	}
 	
 	function login() {
-		if ($('#login').hasClass('active')) {
-			var form = $('#loginForm');
-			var password = $.trim(form.find('input[name="password"]').val());
-			password = sha256_digest(password);
-			form.find('input[name="password"]').val('');
-			var username = form.find('input[name="username"]').val();
-			var sugar = getSugar(username);
-			if (sugar != null && sugar != "") {
-				form.find('input[name="passwordHash"]').val(sha256_digest(sugar + password));
-			} else {
-				form.find('input[name="passwordHash"]').val(sha256_digest(password));
-			}
-			form.submit();
+		var $form = $('#loginForm');
+		var password = $.trim($form.find('input[name="password"]').val());
+		password = sha256_digest(password);
+		$form.find('input[name="password"]').val('');
+		var username = $form.find('input[name="username"]').val();
+		var sugar = getSugar(username);
+		if (sugar != null && sugar != "") {
+			$form.find('input[name="passwordHash"]').val(sha256_digest(sugar + password));
+		} else {
+			$form.find('input[name="passwordHash"]').val(sha256_digest(password));
 		}
+		$form.submit();
 	}
 	
 	function register() {
@@ -88,14 +89,14 @@
 					<a href="#login"><i class="icon-group"></i>&nbsp;Login</a>
 				</p>
 				<div class="content" data-slug="login" data-section-content>
-					<c:url value="login" var="loginURL"/>
+					<c:url value="${requestScope.urlPrefix}login" var="loginURL"/>
 					<form id="loginForm" class="custom" action="${loginURL}" method="POST">
 						<input type="text" name="username" placeholder="Username">
 						<br /> 
 						<input type="password" name="password" placeholder="Password" onkeydown="loginKey(event)"> 
 						<input type="hidden" name="passwordHash" /> 
 						<input type="hidden" name="action" value="login" />
-						<input type="submit" value="Senden">
+						<a href="#" class="button" onclick="javascript:login()">Senden</a>
 					</form>
 				</div>
 			</section>
@@ -104,7 +105,8 @@
 					<a href="#register"><i class="icon-picture"></i>&nbsp;Register</a>
 				</p>
 				<div class="content" data-slug="register" data-section-content>
-					<form id="registerForm" class="custom" action="<c:url value="register"/>" method="POST">
+					<c:url value="${requestScope.urlPrefix}register" var="registerURL"/>
+					<form id="registerForm" class="custom" action="<c:url value="registerURL"/>" method="POST">
 						<input type="text" name="username" placeholder="Username">
 						<br /> 
 						<input type="password" name="password" placeholder="Password">

@@ -12,9 +12,7 @@ import org.apache.log4j.Logger;
 
 import de.deyovi.chat.core.objects.ChatUser;
 import de.deyovi.chat.core.services.ChatUserService;
-import de.deyovi.chat.core.services.CommandProcessorService;
 import de.deyovi.chat.core.services.impl.DefaultChatUserService;
-import de.deyovi.chat.core.services.impl.DefaultCommandProcessorService;
 import de.deyovi.chat.core.utils.ChatConfiguration;
 import de.deyovi.chat.core.utils.PasswordUtil;
 import de.deyovi.chat.web.SessionParameters;
@@ -40,11 +38,6 @@ public class SessionController extends AbstractFormController {
 	private static final Mapping PATH_SUGAR = new DefaultMapping("sugar");
 	private static final Mapping[] PATHES = new Mapping[] { PATH_CHAT, PATH_LOGIN, PATH_LOGOUT, PATH_REGISTER, PATH_SUGAR };
 
-	private static final String PARAM_ROOM = "room";
-	private static final String PARAM_MESSAGE = "message";
-	private static final String PARAM_TALK_FILE = "talkfile";
-
-	private final CommandProcessorService commandService = DefaultCommandProcessorService.getInstance();
 	private final ChatUserService chatUserService = DefaultChatUserService.getInstance();
 	
 	@Override	
@@ -81,13 +74,13 @@ public class SessionController extends AbstractFormController {
 					chatUserService.logout(user);
 					session.setAttribute(SessionParameters.USER, null);
 					session.invalidate();
-					return new ControllerViewOutput("login.jsp", null);
+					return new ControllerViewOutput("WEB-INF/jsp/login.jsp", null);
 				} else {
 					return null;
 				}
 			} else {
 				logger.error("Logout without user!");
-				return new ControllerViewOutput("login.jsp", null);
+				return new ControllerViewOutput("WEB-INF/jsp/login.jsp", null);
 			}
 		} else {
 			return null;
@@ -106,7 +99,7 @@ public class SessionController extends AbstractFormController {
 			return redirectUser(session, newUser);
 		} else {
 			logger.error("Register without session!");
-			return new ControllerViewOutput("login.jsp", null);
+			return new ControllerViewOutput("WEB-INF/jsp/login.jsp", null);
 		}
 	}
 	
@@ -124,11 +117,11 @@ public class SessionController extends AbstractFormController {
 			} else {
 				session.invalidate();
 				logger.error("Sugar didn't match user: got username '" + username + "' expected sugar '" + sugar + "'. Mixed up sessions?");
-				return new ControllerViewOutput("login.jsp", null);
+				return new ControllerViewOutput("WEB-INF/jsp/login.jsp", null);
 			}
 		} else {
 			logger.error("Login without session!");
-			return new ControllerViewOutput("login.jsp", null);
+			return new ControllerViewOutput("WEB-INF/jsp/login.jsp", null);
 		}
 	}
 
@@ -136,13 +129,13 @@ public class SessionController extends AbstractFormController {
 		if (newUser == null) {
 			Map<String, Object> loginParameters = new HashMap<String, Object>(1);
 			loginParameters.put("keyRequired", ChatConfiguration.isInvitationRequired());
-			return new ControllerViewOutput("login.jsp", loginParameters);
+			return new ControllerViewOutput("WEB-INF/jsp/login.jsp", loginParameters);
 		} else {
 			session.setAttribute(SessionParameters.USER, newUser);
 			String logoutKey = Long.toHexString(System.currentTimeMillis());
 			session.setAttribute(SessionParameters.LOGOUT_KEY, logoutKey);
 			session.setMaxInactiveInterval(-1);
-			return new ControllerViewOutput("chat.jsp", null);
+			return new ControllerViewOutput("WEB-INF/jsp/chat.jsp", null);
 		}
 	}
 

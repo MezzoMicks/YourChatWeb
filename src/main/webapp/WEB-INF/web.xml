@@ -15,9 +15,12 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>ChatFacade</servlet-name>
+		<url-pattern></url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>ChatFacade</servlet-name>
 		<url-pattern>/app/*</url-pattern>
 	</servlet-mapping>
-
 	<data-source>
 		<name>PSQLThemis</name>
 		<class-name>org.postgresql.Driver</class-name>

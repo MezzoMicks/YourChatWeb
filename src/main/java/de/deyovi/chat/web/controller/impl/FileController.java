@@ -42,13 +42,8 @@ import de.deyovi.chat.web.json.impl.DefaultJSONObject;
 public class FileController extends AbstractFormController {
 
 	private static final Logger logger = LogManager.getLogger(FileController.class);
-	private static final Mapping PATH_JSP = new DefaultMapping("jsp");
-	private static final Mapping PATH_JS = new DefaultMapping("js");
-	private static final Mapping PATH_CSS = new DefaultMapping("css");
-	private static final Mapping PATH_IMG = new DefaultMapping("img");
-	private static final Mapping PATH_FONT = new DefaultMapping("font");
 	private static final Mapping PATH_CONTENT= new DefaultMapping("content");
-	private static final Mapping[] PATHES = new Mapping[] { PATH_JSP, PATH_JS, PATH_CSS, PATH_IMG, PATH_FONT, PATH_CONTENT };
+	private static final Mapping[] PATHES = new Mapping[] { PATH_CONTENT };
 
 	private final ChatUserService chatUserService = DefaultChatUserService.getInstance();
 	

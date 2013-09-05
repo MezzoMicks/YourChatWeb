@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
 import de.deyovi.chat.core.objects.ChatUser;
 import de.deyovi.chat.core.services.ChatUserService;
 import de.deyovi.chat.core.services.impl.DefaultChatUserService;
+import de.deyovi.chat.core.utils.ChatConfiguration;
 import de.deyovi.chat.core.utils.ChatUtils;
 import de.deyovi.chat.web.controller.Controller;
 import de.deyovi.chat.web.controller.ControllerHTMLOutput;
@@ -48,6 +49,7 @@ public class ChatFacade extends HttpServlet {
 	private final ChatUserService userService = DefaultChatUserService.getInstance();
 
 	private final TreeMap<Mapping, Controller> controllers = new TreeMap<Mapping, Controller>();
+	private final String urlPrefix;
 
 	/**
 	 * Default constructor.
@@ -75,6 +77,7 @@ public class ChatFacade extends HttpServlet {
 				logger.error("Error while instantiating Controller:" + clazz.getName(), e);
 			}
 		}
+		urlPrefix = ChatConfiguration.getUrlPrefix();
 	}
 
 	public void addController(Controller controller) {
@@ -151,6 +154,7 @@ public class ChatFacade extends HttpServlet {
 								request.setAttribute(parameter.getKey(), parameter.getValue());
 							}
 						}
+						request.setAttribute("urlPrefix", urlPrefix);
 				        request.getRequestDispatcher(viewOutput.getTargetJSP()).forward(request, response);
 					} else if (result instanceof ControllerRedirectOutput) {
 						response.sendRedirect(((ControllerRedirectOutput) result).getTarget());

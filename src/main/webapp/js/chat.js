@@ -4,7 +4,7 @@ function listen(listenid, callback) {
 	var tS = new Date().getTime();
 	$.ajax({
 		type : "POST",
-		url : "listen",
+		url : urlPrefix+"listen",
 		data : {
 			"listenid" : listenid,
 			"output" : "async",
@@ -23,7 +23,7 @@ function getSugar(user) {
 	$.ajax({
 		dataType: "json",
 		type : "POST",
-		url : "session",
+		url : urlPrefix+"sugar",
 		data : {
 			"action" : "sugar",
 			"user" : user,
@@ -43,7 +43,7 @@ function talk(message) {
 	var tS = new Date().getTime();
 	$.ajax({
 		type : "POST",
-		url : "input",
+		url : urlPrefix+"input",
 		data : {
 			"action" : "talk",
 			"message" : message,
@@ -63,7 +63,7 @@ function whisper(user, message) {
 	var tS = new Date().getTime();
 	$.ajax({
 		type : "POST",
-		url : "input",
+		url : urlPrefix+"input",
 		data : {
 			"action" : "whisper",
 			"user" : user,
@@ -84,7 +84,7 @@ function doJoin(room) {
 	var tS = new Date().getTime();
 	$.ajax({
 		type : "GET",
-		url : "input",
+		url : urlPrefix+"input",
 		data : {
 			"action" : "join",
 			"room" : room,
@@ -103,7 +103,7 @@ function away(state) {
 	var tS = new Date().getTime();
 	$.ajax({
 		type : "GET",
-		url : "input",
+		url : urlPrefix+"input",
 		data : {
 			"action" : "away",
 			"state" : state,
@@ -122,7 +122,7 @@ function readOutbox(page, limit) {
 	var messages = null;
 	$.ajax({
 		type : "GET",
-		url : "message",
+		url : urlPrefix+"message",
 		data : {
 			"action" : "outbox",
 			"page" : page,
@@ -144,7 +144,7 @@ function readInbox(page, limit) {
 	$.ajax({
 		dataType: "json",
 		type : "GET",
-		url : "message",
+		url : urlPrefix+"message",
 		data : {
 			"action" : "inbox",
 			"page" : page,
@@ -165,7 +165,7 @@ function countUnread() {
 	var count = 0;
 	$.ajax({
 		type : "GET",
-		url : "message",
+		url : urlPrefix+"message",
 		data : {
 			"action" : "inbox",
 			"onlycount" : true,
@@ -186,7 +186,7 @@ function deleteMessage(id, callback) {
 	var tS = new Date().getTime();
 	$.ajax({
 		type : "POST",
-		url : "message",
+		url : urlPrefix+"message",
 		data : {
 			"action" : "delete",
 			"id" : id,
@@ -208,7 +208,7 @@ function readMessage(id, callback) {
 	var tS = new Date().getTime();
 	$.ajax({
 		type : "GET",
-		url : "message",
+		url : urlPrefix+"message",
 		data : {
 			"action" : "read",
 			"id" : id,
@@ -227,7 +227,7 @@ function settings(font, color, room, asyncmode) {
 	var tS = new Date().getTime();
 	$.ajax({
 		type : "POST",
-		url : "action",
+		url : urlPrefix+"action",
 		data : {
 			"action" : "settings",
 			"font" : font,
@@ -251,7 +251,7 @@ function sendMessage(recipient, subject, body, callback) {
 	var tS = new Date().getTime();
 	$.ajax({
 		type : "POST",
-		url : "message",
+		url : urlPrefix+"message",
 		data : {
 			"action" : "send",
 			"recipient" : recipient,
@@ -281,7 +281,7 @@ function invite(trial) {
 	var tS = new Date().getTime();
 	$.ajax({
 		type : "POST",
-		url : "action",
+		url : urlPrefix+"action",
 		data : {
 			"action" : "invite",
 			"trial" : trial,
@@ -301,7 +301,7 @@ function doRefresh(callback) {
 	$.ajax({
 		dataType: "json",
 		type: "GET",
-		url: "action",
+		url: urlPrefix+"action",
 		data : {
 			"action" : "refresh",
 			timestamp : tS
@@ -319,7 +319,7 @@ function readProfile(user, callback) {
 	$.ajax({
 		dataType: "json",
 		type : "POST",
-		url : "action",
+		url : urlPrefix+"action",
 		data : {
 			"action" : "readprofile",
 			"user" : user,
@@ -338,7 +338,7 @@ function doSaveProfile(field, value, callback) {
 	var tS = new Date().getTime();
 	$.ajax({
 		type : "POST",
-		url : "input",
+		url : urlPrefix+"input",
 		data : {
 			"action" : 'profile',
 			"field" : field,
