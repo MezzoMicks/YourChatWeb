@@ -54,7 +54,7 @@
 	var oldTimeout = -1;
 	
 	function chatListen() {
-		listen("<%=listenId%>", function (data) {
+		listen("<c:out value="${sessionScope.listenId}"/>", function (data) {
 			if (!window_focus && data.length > 0 && data.indexOf('<!--') == -1) {
 				$("#favicon").remove();
 				$('head').append('<link id="favicon" rel="icon" href="favicon_talky.gif" type="image/x-icon">');
@@ -122,7 +122,7 @@
 					<li><a href="#" data-reveal-id="mailInboxDialog"><i class="icon-envelope"></i>&nbsp;Mail</a></li>
 					<li><a href="#" id="awayAction"><i class="icon-minus-sign"></i>&nbsp;Away</a></li>
 					<li><a href="#" data-reveal-id="settingsDialog"><i class="icon-wrench"></i>&nbsp;Settings</a></li>
-					<li><a href="session?action=logout&key=<%=logoutKey%>"><i class="icon-power-off"></i>&nbsp;Logout</a></li>
+					<li><a href="session?action=logout&key=<c:out value="${sessionScope.logoutKey}"/>"><i class="icon-power-off"></i>&nbsp;Logout</a></li>
 				</ul>
 			</section>
 		</nav>
@@ -192,7 +192,7 @@
 			<div class="row">
 				<div class="large-4 columns">
 					<label>Nickcolor</label>
-					<input id="userColor" value="<%=userColor%>" onchange="userColorChange()"/>
+					<input id="userColor" value="<c:out value="${sessionScope.user.settings.color}"/>" onchange="userColorChange()"/>
 				</div>	    	
 			</div>
 			<div class="row">
