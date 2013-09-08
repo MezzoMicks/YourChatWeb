@@ -1,3 +1,5 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <!--[if IE 8]> 				 <html class="no-js lt-ie9" lang="en" > <![endif]-->
 <!--[if gt IE 8]><!-->
@@ -18,6 +20,7 @@
 <script src="js/vendor/custom.modernizr.js"></script>
 <script src="js/vendor/jquery.js"></script>
 <script src="js/jquery-ui.min.js"></script>
+<script src="js/jquery.form.min.js"></script>
 <script src="js/jquery-ui.offcanvas.js"></script>
 <script src="js/foundation.min.js"></script>
 <script src="js/chat.js"></script>
@@ -54,7 +57,7 @@
 	var oldTimeout = -1;
 	
 	function chatListen() {
-		listen("<c:out value="${sessionScope.listenId}"/>", function (data) {
+		listen("<c:out value="${sessionScope.user.listenId}"/>", function (data) {
 			if (!window_focus && data.length > 0 && data.indexOf('<!--') == -1) {
 				$("#favicon").remove();
 				$('head').append('<link id="favicon" rel="icon" href="favicon_talky.gif" type="image/x-icon">');
@@ -77,8 +80,13 @@
 			chatListen();
 		}
 	}
+	
+	function refresh() {
+		console.log("refresh called!");
+	}
 
 	$().ready(function() {
+		$("#talkForm").ajaxForm();
 		$(document).foundation();
 		$(window).focus(function() {
 			$("#favicon").remove();
@@ -134,10 +142,10 @@
 			</div>
 		</div>
 		<div id="chat-input" class="large-12 columns">
-			<form class="custom">
+			<form id="talkForm" class="custom" action="app/talk" method="post">
 				<div class="row">
 					<div class="small-12 large-9 columns left">
-						<input type="text">
+						<input type="text" name="message">
 					</div>
 				</div>
 				<div class="row">

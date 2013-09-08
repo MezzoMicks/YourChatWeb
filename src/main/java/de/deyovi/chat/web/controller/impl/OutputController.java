@@ -27,9 +27,12 @@ import de.deyovi.chat.core.services.impl.ResourceTranslatorService;
 import de.deyovi.chat.core.utils.ChatUtils;
 import de.deyovi.chat.web.controller.Controller;
 import de.deyovi.chat.web.controller.ControllerHTMLOutput;
+import de.deyovi.chat.web.controller.ControllerJSONOutput;
 import de.deyovi.chat.web.controller.ControllerOutput;
+import de.deyovi.chat.web.controller.ControllerStatusOutput;
 import de.deyovi.chat.web.controller.Mapping;
 import de.deyovi.chat.web.controller.Mapping.MatchedMapping;
+import de.deyovi.chat.web.json.impl.DefaultJSONObject;
 
 public class OutputController implements Controller {
 
@@ -126,14 +129,14 @@ public class OutputController implements Controller {
 	@Override
 	public ControllerOutput process(MatchedMapping path, ChatUser user, HttpServletRequest request, HttpServletResponse response) {
 		if (path.equals(PATH_LISTEN)) {
-			output(user, request, response);
-			return new ControllerHTMLOutput(null);
+			return output(user, request);
 		} else {
 			return null;
 		}
 	}
 
 	private Message[] listen(ChatUser user, String listenId) {
+		logger.debug("Called listen() on user[" + user+ "]");
 		if (user == null) {
 			return null;
 		} else if (listenId != null) {
@@ -147,22 +150,23 @@ public class OutputController implements Controller {
 					result.add(message);
 				}
 			}
+			logger.debug("returning " + result.size() + " messages");
 			return result.toArray(new Message[result.size()]);
 		} else {
 			return NO_MESSAGES;
 		}
 	}
 	
-	private void output(ChatUser user, HttpServletRequest request, HttpServletResponse response) {
-		response.setContentType("text/html");
-		response.setStatus(200);
-		response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate, private, max-stale=0, post-check=0, pre-check=0");
-		response.setHeader("Connection", "close");
-		response.setHeader("Pragma", "no-cache");
-		response.setHeader("Expires", "Mon, 26 Jul 1997 05:00:00 GMT"); // HTTP 1.1 
-		response.setCharacterEncoding("UTF-8");
+	private ControllerOutput output(ChatUser user, HttpServletRequest request) {
+//		response.setContentType("text/html");
+//		response.setStatus(200);
+//		response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate, private, max-stale=0, post-check=0, pre-check=0");
+//		response.setHeader("Connection", "close");
+//		response.setHeader("Pragma", "no-cache");
+//		response.setHeader("Expires", "Mon, 26 Jul 1997 05:00:00 GMT"); // HTTP 1.1 
+//		response.setCharacterEncoding("UTF-8");
+		ControllerOutput result = null;
 		try {
-			PrintWriter writer = response.getWriter();
 			OutputType type = OutputType.getById(request.getParameter("output"));
 			logger.debug(request.getRemoteAddr() + " does " + type);
 			if (user != null) {
@@ -176,66 +180,17 @@ public class OutputController implements Controller {
 	
 				String htmlString = request.getParameter("html");
 				boolean html = htmlString == null || Boolean.parseBoolean(htmlString);
-				if (type == OutputType.SYNC) {
-					if(html) {
-						writer.write(HEADER);
-						// 5 KB initial load... 
-						// TODO configurable BURST-Mode (some initial MB to trick Filters!)
-						writeDummy(writer, 1024 * 5);
-						writer.flush();
-						response.flushBuffer();
-					}
-					try {
-						boolean stop = false;
-						int senselessCycles = 0;
-						do {
-							Thread.sleep(200l);
-							Message[] listen = listen(user, listenid);
-							switch (decodeMessages(writer, listen, locale, html, true)) {
-							case STOP:
-								stop = true;
-								if (html) {
-									writer.write(STOP_SCRIPT);
-								}
-								break;
-							case REFRESH:
-								if (html) {
-									senselessCycles = 0;
-									writer.write(REFRESH_SCRIPT);
-								}
-								break;
-							case EMPTY:
-								if (html) {
-									if (++senselessCycles % ALIVE_CYCLES == 0) {
-										senselessCycles = 0;
-										writeDummy(writer, 16);
-									}
-								}
-								break;
-							case NONE:
-							default:
-								break;
-							};
-							writer.flush();
-							response.flushBuffer();
-						} while (!stop);
-							
-						if (stop) {
-							logger.info("Obsolet stream for " + user.getUserName() + " interrupted!");
-						}
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				} else if (type == OutputType.ASYNC) {
+				if (type == OutputType.ASYNC) {
 					Message[] messages = listen(user, listenid);
+					StringBuilder writer = new StringBuilder();
 					Trigger trigger = decodeMessages(writer, messages, locale, html, true);
 					if (html) {
 						switch (trigger) {
 						case REFRESH:
-							writer.write(REFRESH_SCRIPT);
+							writer.append(REFRESH_SCRIPT);
 							break;
 						case STOP:
-							writer.write(STOP_SCRIPT);
+							writer.append(STOP_SCRIPT);
 							break;
 						case EMPTY:
 							Integer senselessCycles = senslessCycleMap.get(listenid);
@@ -251,29 +206,31 @@ public class OutputController implements Controller {
 						default:
 							break;
 						}
+						result = new ControllerHTMLOutput(writer.toString());
 					} else if (trigger == Trigger.STOP) {
-						response.sendError(307);
+						result = new ControllerStatusOutput(307);
 					}
 				} else if (type == OutputType.REGISTER) {
 					logger.info(user + 	" registers to Listen");
 					user.setListenerTime(System.currentTimeMillis());
 					user.alive();
 					user.getCurrentRoom().join(user);
-					writer.write(user.getListenId());
+					result = new ControllerJSONOutput(new DefaultJSONObject("listenId", user.getListenId()));
 				}
 			} else {
-				writer.write("No User!");
+				result = new ControllerHTMLOutput("No User!");
 			}
 		} catch (IOException ioex) {
 			logger.error("Error writing to HTTP", ioex);
 		}
+		return result;
 	}
 
 	public enum Trigger {
 		NONE, REFRESH, STOP, EMPTY
 	}
 
-	public Trigger decodeMessages(Writer writer, Message[] messages, Locale locale, boolean html, boolean live) throws IOException {
+	public Trigger decodeMessages(Appendable appender, Message[] messages, Locale locale, boolean html, boolean live) throws IOException {
 		boolean refresh = false;
 		boolean stop = false;
 		boolean empty = true;
@@ -392,9 +349,9 @@ public class OutputController implements Controller {
 						sb.append("<br />");
 					}
 					if (profileScript != null) {
-						writer.write(profileScript);
+						appender.append(profileScript);
 					}
-					writer.write(sb.toString());
+					appender.append(sb);
 				}
 			}
 		}
@@ -448,13 +405,13 @@ public class OutputController implements Controller {
 		return content;
 	}
 	
-	private static void writeDummy(Writer writer, int length) throws IOException {
-		writer.write("<!-- ");
+	private static void writeDummy(Appendable appender, int length) throws IOException {
+		appender.append("<!-- ");
 		Random rnd = new Random();
 		while (length-- > 0) {
-			writer.write((rnd.nextInt(10)+48));
+			appender.append(new Integer((rnd.nextInt(10)+48)).toString());
 		}
-		writer.write("-->");
+		appender.append("-->");
 	}
 	
 }

@@ -114,7 +114,7 @@ public class ChatFacade extends HttpServlet {
 		} else if (!requestPath.equals("/")){
 			requestPath = requestPath.substring(1);
 		}
-		logger.info("called doGeneral with requestPath=" + requestPath);
+		logger.debug("called doGeneral with requestPath=" + requestPath);
 		Controller controller = null;
 		MatchedMapping matchedPath = null;
 		for (Mapping pathPrefix : controllers.descendingKeySet()) {
@@ -130,13 +130,7 @@ public class ChatFacade extends HttpServlet {
 		} else {
 			try {
 				HttpSession session = request.getSession();
-				String userSessionID = (String) session.getAttribute(SessionParameters.USER);
-				ChatUser user;
-				if (userSessionID == null) {
-					user = null;
-				} else {
-					user = userService.getBySessionId(userSessionID);
-				}
+				ChatUser user = (ChatUser) session.getAttribute(SessionParameters.USER);
 				ControllerOutput result = controller.process(matchedPath, user, request, response);
 				if (result == null) {
 					response.sendError(404);
@@ -155,9 +149,15 @@ public class ChatFacade extends HttpServlet {
 							}
 						}
 						request.setAttribute("urlPrefix", urlPrefix);
+						logger.debug("forwarding to:" + viewOutput.getTargetJSP());
 				        request.getRequestDispatcher(viewOutput.getTargetJSP()).forward(request, response);
 					} else if (result instanceof ControllerRedirectOutput) {
-						response.sendRedirect(((ControllerRedirectOutput) result).getTarget());
+						String target = ((ControllerRedirectOutput) result).getTarget();
+						if (target.startsWith("/")) {
+							target = request.getContextPath() + target;
+							System.out.println(target);
+						}
+						response.sendRedirect(target);
 					} else if (result instanceof ControllerStreamOutput) {
 						IOUtils.copy(((ControllerStreamOutput) result).getStream(), response.getOutputStream());
 					}

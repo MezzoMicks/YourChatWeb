@@ -17,6 +17,7 @@ import de.deyovi.chat.core.services.impl.DefaultCommandProcessorService;
 import de.deyovi.chat.core.services.impl.DefaultInputProcessorService;
 import de.deyovi.chat.web.controller.ControllerHTMLOutput;
 import de.deyovi.chat.web.controller.ControllerOutput;
+import de.deyovi.chat.web.controller.ControllerStatusOutput;
 import de.deyovi.chat.web.controller.Mapping;
 import de.deyovi.chat.web.controller.Mapping.MatchedMapping;
 
@@ -50,14 +51,14 @@ public class InputController extends AbstractFormController {
 		Mapping path = matchedPath.getMapping();
 		if (path == PATH_TALK) {
 			talk(user, request);
-			return new ControllerHTMLOutput(null);
+			return new ControllerStatusOutput(200);
 		} else if (path == PATH_AWAY) {
 			commandService.away(user, !user.isAway());
-			return new ControllerHTMLOutput(null);
+			return new ControllerStatusOutput(200);
 		} else if (path == PATH_JOIN) {
 			Map<String, Object> parameters = getParameters(request);
 			commandService.join(user, (String) parameters.get(PARAM_ROOM));
-			return new ControllerHTMLOutput(null);
+			return new ControllerStatusOutput(200);
 		} else {
 			return null;
 		}
@@ -82,9 +83,15 @@ public class InputController extends AbstractFormController {
 			uploadStream = null;
 			uploadName = null;
 		}
+		if (logger.isDebugEnabled()) {
+			logger.debug(user + " starting process() for " + message);
+		}
 		Segment[] segments = inputService.process(user, message, uploadStream, uploadName);
 		if (segments != null) {
 			user.getCurrentRoom().talk(user, segments);
+		}
+		if (logger.isDebugEnabled()) {
+			logger.debug(user + " said " + message);
 		}
 	}
 

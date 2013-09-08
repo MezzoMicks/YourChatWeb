@@ -47,7 +47,7 @@ public class DefaultMapping implements Mapping, Comparable<Mapping> {
 			}
 			if (methodMatch) {
 				// Does the path match?
-				logger.info("matching " + pathAsString + " against " + requestPath);
+				logger.debug("matching " + pathAsString + " against " + requestPath);
 				if (requestPath.startsWith(pathAsString)) {
 					result = new DefaultMatchedMapping(requestPath, reqMethod);
 				}

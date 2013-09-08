@@ -18,6 +18,7 @@ import de.deyovi.chat.core.utils.PasswordUtil;
 import de.deyovi.chat.web.SessionParameters;
 import de.deyovi.chat.web.controller.ControllerJSONOutput;
 import de.deyovi.chat.web.controller.ControllerOutput;
+import de.deyovi.chat.web.controller.ControllerRedirectOutput;
 import de.deyovi.chat.web.controller.ControllerViewOutput;
 import de.deyovi.chat.web.controller.Mapping;
 import de.deyovi.chat.web.controller.Mapping.MatchedMapping;
@@ -113,7 +114,11 @@ public class SessionController extends AbstractFormController {
 			if (sugar.endsWith(username)) {
 				String realSugar = sugar.substring(0, sugar.length() - username.length());
 				ChatUser newUser = chatUserService.login(username, password, realSugar);
-				return redirectUser(session, newUser);
+				session.setAttribute(SessionParameters.USER, newUser);
+				String logoutKey = Long.toHexString(System.currentTimeMillis());
+				session.setAttribute(SessionParameters.LOGOUT_KEY, logoutKey);
+				session.setMaxInactiveInterval(-1);
+				return new ControllerRedirectOutput("/");
 			} else {
 				session.invalidate();
 				logger.error("Sugar didn't match user: got username '" + username + "' expected sugar '" + sugar + "'. Mixed up sessions?");
@@ -131,10 +136,6 @@ public class SessionController extends AbstractFormController {
 			loginParameters.put("keyRequired", ChatConfiguration.isInvitationRequired());
 			return new ControllerViewOutput("WEB-INF/jsp/login.jsp", loginParameters);
 		} else {
-			session.setAttribute(SessionParameters.USER, newUser);
-			String logoutKey = Long.toHexString(System.currentTimeMillis());
-			session.setAttribute(SessionParameters.LOGOUT_KEY, logoutKey);
-			session.setMaxInactiveInterval(-1);
 			return new ControllerViewOutput("WEB-INF/jsp/chat.jsp", null);
 		}
 	}

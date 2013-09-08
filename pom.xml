@@ -35,17 +35,6 @@
 			<version>2.3.1</version>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.persistence</groupId>
-			<artifactId>eclipselink</artifactId>
-			<version>2.5.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.persistence</groupId>
-			<artifactId>javax.persistence</artifactId>
-			<version>2.1.0</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<version>9.2-1003-jdbc4</version>
@@ -75,6 +64,7 @@
 				<configuration>
 					<tomeeVersion>1.5.2</tomeeVersion>
 					<args>-Dopenejb.log.factory=slf4j-log4j12</args>
+					<debug>true</debug>
 					<synchronization />
 					<reloadOnUpdate>true</reloadOnUpdate>
 					<libs>
