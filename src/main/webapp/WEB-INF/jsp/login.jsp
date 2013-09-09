@@ -81,7 +81,11 @@
 
 <body>
 	  <div class="row">
-	    <div class="large-6 columns">
+	    <div class="large-centered large-12 columns">
+	    </div>
+	  </div>
+	  <div class="row">
+	    <div class="large-centered large-6 columns">
 	    <div class="section-container auto" data-section data-options="one_up: true; deep_linking: true">
 			<section>
 				<p class="title" data-section-title>
