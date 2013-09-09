@@ -22,7 +22,7 @@ import de.deyovi.chat.web.controller.ControllerRedirectOutput;
 import de.deyovi.chat.web.controller.ControllerViewOutput;
 import de.deyovi.chat.web.controller.Mapping;
 import de.deyovi.chat.web.controller.Mapping.MatchedMapping;
-import de.deyovi.chat.web.json.impl.DefaultJSONObject;
+import de.deyovi.json.impl.DefaultJSONObject;
 
 /**
  * Controller for general Input (talking and uploading) and some additional actions

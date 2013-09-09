@@ -1,6 +1,7 @@
 package de.deyovi.chat.web.controller;
 
-import de.deyovi.chat.web.json.JSONObject;
+import de.deyovi.json.JSONObject;
+
 
 public class ControllerJSONOutput implements ControllerOutput {
 

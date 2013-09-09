@@ -32,7 +32,7 @@ import de.deyovi.chat.web.controller.ControllerOutput;
 import de.deyovi.chat.web.controller.ControllerStatusOutput;
 import de.deyovi.chat.web.controller.Mapping;
 import de.deyovi.chat.web.controller.Mapping.MatchedMapping;
-import de.deyovi.chat.web.json.impl.DefaultJSONObject;
+import de.deyovi.json.impl.DefaultJSONObject;
 
 public class OutputController implements Controller {
 
