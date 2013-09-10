@@ -6825,25 +6825,33 @@ textarea {
 }
 
 /* line 80, ../sass/_chat.scss */
+.file.hidden {
+  opacity: 0;
+  display: block;
+  height: 0;
+  width: 0;
+}
+
+/* line 87, ../sass/_chat.scss */
 table.mail {
   width: 100%;
   table-layout: fixed;
 }
-/* line 84, ../sass/_chat.scss */
+/* line 91, ../sass/_chat.scss */
 table.mail tr td {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-/* line 90, ../sass/_chat.scss */
+/* line 97, ../sass/_chat.scss */
 table.mail tr.unread td {
   font-weight: bold;
 }
-/* line 94, ../sass/_chat.scss */
+/* line 101, ../sass/_chat.scss */
 table.mail tr td.date {
   width: 10em;
 }
-/* line 98, ../sass/_chat.scss */
+/* line 105, ../sass/_chat.scss */
 table.mail tr td.delete {
   width: 2em;
 }

@@ -84,9 +84,17 @@
 	function refresh() {
 		console.log("refresh called!");
 	}
+	
+	function upload() {
+		$("#talkFile").trigger("click");
+	}
 
 	$().ready(function() {
-		$("#talkForm").ajaxForm();
+		$("#talkForm").ajaxForm({success:function() {
+			var $inputField = $("#talkText");
+			$inputField.val("");
+			$inputField.focus();
+		}});
 		$(document).foundation();
 		$(window).focus(function() {
 			$("#favicon").remove();
@@ -145,7 +153,8 @@
 			<form id="talkForm" class="custom" action="app/talk" method="post">
 				<div class="row">
 					<div class="small-12 large-9 columns left">
-						<input type="text" name="message">
+						<input id="talkText" type="text" name="message">
+						<input id="talkFile" type="file" name="talkfile" class="file hidden"/>
 					</div>
 				</div>
 				<div class="row">
@@ -163,7 +172,7 @@
 					</div>
 					<div class="small-2 large-3 columns right">
 						<div class="right">
-							<a><i class="icon-upload-alt"></i></a>&nbsp;<i
+							<a id="talkUpload" onclick="javascript:upload()"><i class="icon-upload-alt"></i></a>&nbsp;<i
 								class="icon-circle"></i>&nbsp;
 						</div>
 					</div>

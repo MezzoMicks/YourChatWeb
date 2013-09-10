@@ -77,6 +77,13 @@ textarea {
 	color: white;
 }
 
+	.file.hidden {
+		opacity:0;
+		display:block;
+		height:0;
+		width:0;
+	}
+
 table.mail {
 	width: 100%;
 	table-layout:fixed;

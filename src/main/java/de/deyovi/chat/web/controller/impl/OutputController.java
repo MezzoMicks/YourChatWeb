@@ -42,29 +42,7 @@ public class OutputController implements Controller {
 
 	private static final Message[] NO_MESSAGES = new Message[0];
 	private final static int ALIVE_CYCLES = 100;
-	
-	private static final String HEADER = 
-			"<HTML><HEAD><TITLE>Chat-Output</TITLE>" + //
-			"<link href=\"css/bootstrap.min.css\" rel=\"stylesheet\" media=\"screen\">" +//		
-			"<style>" + //
-			" body {background:transparent; line-height:1em; margin: 0 8px; color:#000; line-height:normal}" + //
-			" .username {font-weight:bold; }" +//
-			" .useralias {font-weight:bold; font-style:italic; }" +//
-			"</style>" + //
-			"<script type=\"text/javascript\">" +//
-			"   function openProfile(usernam) {parent.openProfile(username);}" + //
-			"   function refresh() {parent.refresh();}" + //
-			"   function stop() {return false}" + //
-			"   function toolify(element) {parent.toolify(element); return false;}" + //
-			"	function preview(element, click) {parent.preview(element, click); return false;}"  +//
-			"	function moves() {" +
-			" 		if (typeof parent.scrolling == 'undefined' || parent.scrolling) window.scroll(1,5000000); window.setTimeout(\"moves()\", 100);} moves();" + //
-			"</script>" + //
-			"</HEAD>" + //
-			"<BODY style=\"overflow-x: hidden;\">" 
-			//+ //
-			//"<div style=\"position:absolute; bottom:0; right:0;\"><input type=\"checkbox\" value=\"true\" onclick=\"toggleScrolling(this);\"/>&nbsp;auto-scroll</div>";
-			;
+
 	private static final String STOP_SCRIPT = 
 			"<script type=\"text/javascript\">" + //
 			"	stop();" + //
@@ -300,17 +278,38 @@ public class OutputController implements Controller {
 								content = ChatUtils.escape(content);
 							}
 							break;
+						case DOCUMENT:
+						case UNKNOWN:
 						case VIDEO:
 						case IMAGE:
 						case WEBSITE:
 							refresh = true;
 							if (html) {
 								String text = seg.getAlternateName() != null ? seg.getAlternateName() : seg.getContent();
+								String typeClass = "icon-";
+								switch (seg.getType()) {
+								case IMAGE:
+									typeClass += "picture";
+									break;
+								case DOCUMENT:
+									typeClass += "text";
+									break;
+								case VIDEO:
+									typeClass += "film";
+									break;
+								case WEBSITE:
+									typeClass += "globe";
+									break;
+								default:
+								case UNKNOWN:
+									typeClass += "question";
+									break;
+								}
 								if (live && seg.getPreview() != null) {
 									text = StringEscapeUtils.escapeHtml4(text);
-									content = String.format("<a target=\"_blank\" onmouseover=\"preview(this, false);\" href=\"%1$s\" data-preview=\"%3$s\">%2$s</a>", content, text, seg.getPreview()); 
+									content = String.format("<a target=\"_blank\" onmouseover=\"preview(this, false);\" href=\"%1$s\" data-preview=\"%3$s\"><i class=\"" + typeClass + "\" />&nbsp;%2$s</a>", content, text, seg.getPreview()); 
 								} else {
-									content = String.format("<a target=\"_blank\" href=\"%1$s\">%2$s</a>", content, text); 
+									content = String.format("<a target=\"_blank\" href=\"%1$s\"><i class=\"" + typeClass + "\" />&nbsp;%2$s</a>", content, text); 
 								}
 							} else {
 								content = seg.getContent();
