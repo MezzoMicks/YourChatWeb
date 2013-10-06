@@ -1003,12 +1003,12 @@ $section-function-factor: 10%;
 $section-title-color: #fff;
 $section-title-bg: #7E909D ;
 $section-title-bg-active: darken($section-title-bg, $section-function-factor);
-$section-title-bg-active-tabs: #738B9D;
+$section-title-bg-active-tabs: #20272C;
 $section-title-bg-hover: darken($section-title-bg, $section-function-factor/2);
 
 // Border size
 
-$section-border-size: 2px;
+$section-border-size: 0;
 $section-border-style: solid;
 $section-border-color: #fff;
 

@@ -63,7 +63,7 @@
 				$('head').append('<link id="favicon" rel="icon" href="favicon_talky.gif" type="image/x-icon">');
 			}
 			$('#chat-screen').append(data);
-			oldTimeout = window.setTimeout(function() { chatListen() }, 500);
+			oldTimeout = window.setTimeout(function() { chatListen(); }, 500);
 			$('#signal').attr("src", "img/ampel.gif");
 			lastUpdate = new Date().getTime();
 		});
@@ -71,6 +71,8 @@
 			$('#chat-screen').scrollTop(5000000); 
 		}
 	}
+	
+	
 
 	function restartListener() {
 		var now = new Date().getTime();
@@ -81,8 +83,146 @@
 		}
 	}
 	
+	function isArray(what) {
+	    return Object.prototype.toString.call(what) === '[object Array]';
+	}
+	
+	
+	function tooltipify($what) {
+		console.log($what);
+		var pinky = $what.data('pinky');
+		console.log(pinky);
+		if (pinky != null) {
+			$what.attr('data-title', "<img src='" + pinky + "' style='width:64px;height:64px'>");
+			$what.attr('data-toggle', 'tooltip');
+			$what.attr('data-html', 'true');
+			$what.attr('data-placement', 'left');
+			$what.tooltip();
+		}
+	}
+	
+	function appendUser(userList, user, withAka) {
+		var userLi = $('<li>');
+		// if the user is a 'normal' user
+		if (user.guest == false) {
+			// add a hyperlink
+			var userA = $('<a class="userLink" target="_blank">');
+			userA.attr('href', 'profile.jsp?user=' + user.username);
+			userList.append(userA);
+			userA.append(userLi);
+			// if the user has an avatar, show a tooltip for it
+			if (user.avatar != null && user.avatar != 'null') {
+				userA.attr('data-tooltip', '<img src="data/db.image.pinky.' + user.avatar + '" style="width:64px;height:64px"/>');
+			}
+		} else {
+			userList.append(userLi);
+		}
+		var userI = $('<i>');
+		userLi.append(userI);
+		// colorize the icons background in the users color
+		userI.css('color', '#' + user.color);
+		if (user.away == "true") {;
+			userI.addClass('icon-remove-sign');
+		} else {
+			userI.addClass('icon-user');
+		}
+		// append their name
+		userLi.append('&nbsp;' + user.username);
+		if (withAka && user.alias != null && user.alias != 'null') {
+			userLi.append('&nbsp;(' + user.alias + ')');
+		}
+	}
+	
+	function appendMedia(mediaList, media) {
+		var mediaLi = $('<li>');
+		var mediaA = $('<a>');
+		mediaLi.append(mediaA);
+		mediaA.attr('target', '_blank');
+		mediaA.attr('href', media.link);
+		if (media.preview != null && media.preview != 'null') {
+			mediaA.attr('data-preview', media.preview);
+		}
+		if (media.pinky != null && media.pinky != 'null') {
+			mediaA.data('pinky', media.pinky);
+			tooltipify(mediaA);
+		}
+		var mediaI = $('<i>');
+		mediaA.append(mediaI);
+		if (media.type == "IMAGE") {
+			mediaI.addClass('icon-picture');
+		} else if (media.type == "VIDEO") {
+			mediaI.addClass('icon-film');
+		} else if (media.type == "WEBSITE") {
+			mediaI.addClass('icon-globe');
+		} else if (media.type == "PROTOKOLL") {
+			mediaI.addClass('icon-list-alt');
+		}
+		mediaA.append('&nbsp;' + media.name);
+		if (media.user != null && media.user != "null") {
+			mediaLi.append('<br/><i class="icon-user"></i>&nbsp' + media.user);
+		}
+		mediaList.append(mediaLi);
+	}
+	
 	function refresh() {
 		console.log("refresh called!");
+		doRefresh(function(data) {
+			console.log(data);
+			console.log(data.users);
+			// ### Refresh UserList ###
+			// get the selector for the userlist and clear it
+			var userList = $('#roomMateList');
+			userList.empty();
+			// iterate over returned users
+			if (data.users != null) {
+				if (isArray(data.users)) {
+					$.each(data.users, function(i, user) {
+						appendUser(userList, user, true);
+					});	
+				} else {
+					appendUser(userList, data.users, true);
+				}
+			}
+			var otherList = $('#neighbourList');
+			otherList.empty();
+			// iterate over returned users
+			if (data.others != null) {
+				if (isArray(data.others)) {
+					$.each(data.others, function(i, user) {
+						appendUser(otherList, user, false);
+					});
+				} else {
+					appendUser(otherList, data.others, false);
+				}
+			}
+			// ### Refresh MediaList ###
+			// selector for medialist and clear it
+			var mediaList = $('#mediaList');
+			mediaList.empty();
+			if (data.medias != null) {
+				if (isArray(data.medias)) {
+					$.each(data.medias, function(i, media) {
+						appendMedia(mediaList, media);
+					});
+				} else {
+					appendMedia(mediaList, data.medias);
+				}
+			}
+			// ### Refresh RoomList ###
+			var roomList = $('#roomSelect');
+			roomList.empty();
+			// initial dummy option
+			roomList.append("<option selected>switch rooms</option>");
+			$.each(data.rooms, function(i, r) {
+				var roomOption = $('<option>');
+				roomList.append(roomOption);
+				roomOption.attr('data-room', r.name);
+				roomOption.append(r.name);
+				// usercount in brackets!
+				roomOption.append('&nbsp;(' + r.users + ')');
+			});
+			$('#channelName').html(data.room);
+		});
 	}
 	
 	function upload() {
@@ -90,12 +230,24 @@
 	}
 
 	$().ready(function() {
+		$(document).foundation();
+		
+		$('#chat-screen').mouseover(function(event){
+		    console.log($(event.target).data('preview'));
+		});
+		
+		$(document).tooltip({
+			items : "a[data-tooltip]",
+			content : function() {
+				console.log("called back")
+				return $(this).data("tooltip");
+			}
+		});
 		$("#talkForm").ajaxForm({success:function() {
 			var $inputField = $("#talkText");
 			$inputField.val("");
 			$inputField.focus();
 		}});
-		$(document).foundation();
 		$(window).focus(function() {
 			$("#favicon").remove();
 			$('head').append('<link id="favicon" rel="icon" href="favicon.ico" type="image/x-icon">');
@@ -105,6 +257,7 @@
 			window_focus = false;
 		});
 		chatListen();
+		refresh();
 		$('#signalLink').click(restartListener);
 	});
 	$(window).resize(chatResize);
@@ -138,7 +291,7 @@
 					<li><a href="#" data-reveal-id="mailInboxDialog"><i class="icon-envelope"></i>&nbsp;Mail</a></li>
 					<li><a href="#" id="awayAction"><i class="icon-minus-sign"></i>&nbsp;Away</a></li>
 					<li><a href="#" data-reveal-id="settingsDialog"><i class="icon-wrench"></i>&nbsp;Settings</a></li>
-					<li><a href="session?action=logout&key=<c:out value="${sessionScope.logoutKey}"/>"><i class="icon-power-off"></i>&nbsp;Logout</a></li>
+					<li><a href="<c:out value="${requestScope.urlPrefix}logout"/>?action=logout&key=<c:out value="${sessionScope.logoutKey}"/>"><i class="icon-power-off"></i>&nbsp;Logout</a></li>
 				</ul>
 			</section>
 		</nav>
@@ -186,8 +339,9 @@
 				<p class="title" data-section-title>
 					<a href="#users"><i class="icon-group"></i>&nbsp;Users</a>
 				</p>
-				<div class="content" data-slug="users" data-section-content>
-					<p>Content of section 1.</p>
+				<div id="userList" class="content" data-slug="users" data-section-content>
+					<ul id="roomMateList"></ul>
+					<ul id="neighbourList"></ul>
 				</div>
 			</section>
 			<section>
@@ -195,7 +349,7 @@
 					<a href="#media"><i class="icon-picture"></i>&nbsp;Media</a>
 				</p>
 				<div class="content" data-slug="media" data-section-content>
-					<p>Content of section 2.</p>
+					<ul id="mediaList"></ul>
 				</div>
 			</section>
 			</div>

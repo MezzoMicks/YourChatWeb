@@ -53,6 +53,11 @@ textarea {
 	width: 100%;
 	padding: 4px;
 	overflow-y: scroll;
+	
+	p {
+		line-height: 1.25;
+		margin-bottom: 0;
+	}
 }
 
 #profile-box {
@@ -77,12 +82,18 @@ textarea {
 	color: white;
 }
 
-	.file.hidden {
-		opacity:0;
-		display:block;
-		height:0;
-		width:0;
+#roomMateList,#neighbourList {
+	a.userLink {
+		color:white;
 	}
+}
+
+.file.hidden {
+	opacity:0;
+	display:block;
+	height:0;
+	width:0;
+}
 
 table.mail {
 	width: 100%;

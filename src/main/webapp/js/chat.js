@@ -301,12 +301,12 @@ function doRefresh(callback) {
 	$.ajax({
 		dataType: "json",
 		type: "GET",
-		url: urlPrefix+"action",
+		url: urlPrefix+"refresh",
 		data : {
-			"action" : "refresh",
 			timestamp : tS
 		},
 		success: function(result) {
+			console.log(result);
 			callback(result);
 		}
 	});

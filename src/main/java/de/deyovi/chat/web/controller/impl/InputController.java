@@ -67,7 +67,13 @@ public class InputController extends AbstractFormController {
 	private void talk(ChatUser user, HttpServletRequest request) {
 		Map<String, Object> parameters = getParameters(request);
 		String message = (String) parameters.get(PARAM_MESSAGE);
-		FileUpload upload = (FileUpload) parameters.get(PARAM_TALK_FILE);
+		Object fileObject = parameters.get(PARAM_TALK_FILE);
+		FileUpload upload;
+		if (fileObject != null && fileObject instanceof FileUpload) {
+			upload = (FileUpload) fileObject;
+		} else {
+			upload = null;
+		}
 		if (logger.isDebugEnabled()) {
 			logger.debug(user + " says " + message);
 		}

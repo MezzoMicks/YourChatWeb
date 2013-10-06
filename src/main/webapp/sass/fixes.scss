@@ -1,12 +1,24 @@
-.section-container.auto {
-	border-left: none;
-	border-right: none;
-	section.active, .section.active {
-		 > .content {
-			border: none;
-			border-top: 2px solid white;
-			z-index: 100;
+.section-container.auto > section.active {
+	> .title {
+		font-weight: bold;
+		@media only screen and (min-width: 768px) {
+			top: 1px;
 		}
 	}
-	
+	> .content {
+		@media only screen and (min-width: 768px) {
+			border: none;
+			border-top: 2px solid white;
+		}
+	}
+}
+.section-container.auto > section {
+	> .title {
+		@media only screen and (max-width: 768px) {
+			border-bottom: 2px solid white;
+		}
+		@media only screen and (min-width: 768px) {
+			top: 5px;
+		}
+	}
 }

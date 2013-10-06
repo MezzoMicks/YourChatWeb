@@ -75,13 +75,13 @@ public class SessionController extends AbstractFormController {
 					chatUserService.logout(user);
 					session.setAttribute(SessionParameters.USER, null);
 					session.invalidate();
-					return new ControllerViewOutput("WEB-INF/jsp/login.jsp", null);
+					return new ControllerRedirectOutput("/");
 				} else {
 					return null;
 				}
 			} else {
 				logger.error("Logout without user!");
-				return new ControllerViewOutput("WEB-INF/jsp/login.jsp", null);
+				return new ControllerRedirectOutput("/");
 			}
 		} else {
 			return null;

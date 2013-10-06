@@ -1,14 +1,14 @@
 package de.deyovi.chat.web.controller.impl;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.Writer;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,9 +20,14 @@ import org.apache.log4j.Logger;
 import de.deyovi.chat.core.constants.ChatConstants.MessagePreset;
 import de.deyovi.chat.core.objects.ChatUser;
 import de.deyovi.chat.core.objects.Message;
+import de.deyovi.chat.core.objects.Room.RoomInfo;
 import de.deyovi.chat.core.objects.Segment;
 import de.deyovi.chat.core.objects.impl.SystemMessage;
+import de.deyovi.chat.core.services.ChatUserService;
+import de.deyovi.chat.core.services.RoomService;
 import de.deyovi.chat.core.services.TranslatorService;
+import de.deyovi.chat.core.services.impl.DefaultChatUserService;
+import de.deyovi.chat.core.services.impl.DefaultRoomService;
 import de.deyovi.chat.core.services.impl.ResourceTranslatorService;
 import de.deyovi.chat.core.utils.ChatUtils;
 import de.deyovi.chat.web.controller.Controller;
@@ -32,6 +37,7 @@ import de.deyovi.chat.web.controller.ControllerOutput;
 import de.deyovi.chat.web.controller.ControllerStatusOutput;
 import de.deyovi.chat.web.controller.Mapping;
 import de.deyovi.chat.web.controller.Mapping.MatchedMapping;
+import de.deyovi.json.JSONObject;
 import de.deyovi.json.impl.DefaultJSONObject;
 
 public class OutputController implements Controller {
@@ -39,9 +45,11 @@ public class OutputController implements Controller {
 	private static final Logger logger = LogManager.getLogger(OutputController.class);
 	
 	private static final Mapping PATH_LISTEN = new DefaultMapping("listen");
-
+	private static final Mapping PATH_REFRESH = new DefaultMapping("refresh");
+	private static final Mapping[] PATHES = new Mapping[] { PATH_LISTEN, PATH_REFRESH };
 	private static final Message[] NO_MESSAGES = new Message[0];
 	private final static int ALIVE_CYCLES = 100;
+	private static AtomicLong ANCHOR_COUNT = new AtomicLong();
 
 	private static final String STOP_SCRIPT = 
 			"<script type=\"text/javascript\">" + //
@@ -94,10 +102,10 @@ public class OutputController implements Controller {
 			return SYNC;
 		}
 	}
-
-	private static final Mapping[] PATHES = new Mapping[] { PATH_LISTEN };
 	
 	private final TranslatorService translatorService = ResourceTranslatorService.getInstance();
+	private final RoomService roomServce = DefaultRoomService.getInstance();
+	private final ChatUserService userService = DefaultChatUserService.getInstance();
 	
 	@Override
 	public Mapping[] getMappings() {
@@ -106,11 +114,82 @@ public class OutputController implements Controller {
 
 	@Override
 	public ControllerOutput process(MatchedMapping path, ChatUser user, HttpServletRequest request, HttpServletResponse response) {
+		String lang = request.getParameter("lang");
+		if (lang == null) {
+			lang = "de";
+		}
+		Locale locale = new Locale(lang);
+
 		if (path.equals(PATH_LISTEN)) {
-			return output(user, request);
+			return output(user, locale, request);
+		} else if (path.equals(PATH_REFRESH)) {
+			return new ControllerJSONOutput(refresh(user, locale));
 		} else {
 			return null;
 		}
+	}
+
+	private JSONObject refresh(ChatUser user, Locale locale) {
+		JSONObject result = new DefaultJSONObject();
+		result.put("away", user.isAway());
+		String font = user.getSettings().getFont();
+		result.put("font", (font != null ? font.trim() : null));
+		RoomInfo info = user.getCurrentRoom().getInfoForUser(user);
+		result.put("room", ChatUtils.escape(info.getName()));
+		result.put("background", info.getBgColor());
+		result.put("foreground", info.getFgColor());
+		result.put("backgroundimage", info.getBgImage());
+		ChatUser[] myRoomMates = info.getUsers();
+		for (ChatUser roomUser : myRoomMates) {
+			result.push("users", jsonifyUser(roomUser));
+		}
+		for (Segment media : info.getMedia()) {
+			JSONObject jsonMedia = new DefaultJSONObject();
+			jsonMedia.put("link", media.getContent());
+			String name = media.getAlternateName();
+			if (name == null) {
+				name = media.getContent();
+			} else  {
+				if (name.charAt(0) == '$') {
+					name = translatorService.translate(name.substring(1), locale);
+				}
+				name = ChatUtils.escape(name);
+			}
+			jsonMedia.put("name", name);
+			jsonMedia.put("preview", media.getPreview());
+			jsonMedia.put("pinky", media.getPinky());
+			jsonMedia.put("type", media.getType());
+			jsonMedia.put("user", ChatUtils.escape(media.getUser()));
+			result.push("medias", jsonMedia);
+		}
+		List<ChatUser> otherUsers = userService.getLoggedInUsers();
+		for (ChatUser roomMate : myRoomMates) {
+			otherUsers.remove(roomMate);
+		}
+		for (ChatUser otherUser : otherUsers) {
+			result.push("others", jsonifyUser(otherUser));
+		}
+		List<RoomInfo> openRooms = roomServce.getOpenRooms();
+		for (RoomInfo room : openRooms) {
+			JSONObject jsonRoom = new DefaultJSONObject();
+			jsonRoom.put("name", ChatUtils.escape(room.getName()));
+			jsonRoom.put("color", room.getBgColor());
+			ChatUser[] users = room.getUsers();
+			jsonRoom.put("users", (users != null ? users.length : null));
+			result.push("rooms", jsonRoom);
+		}
+		return result;
+	}
+
+	private JSONObject jsonifyUser(ChatUser user) {
+		JSONObject json = new DefaultJSONObject();
+		json.put("username", ChatUtils.escape(user.getUserName()));
+		json.put("alias", ChatUtils.escape(user.getAlias()));
+		json.put("color", user.getSettings().getColor());
+		json.put("guest", user.isGuest());
+		json.put("away", user.isAway());
+		json.put("avatar", user.getProfile().getAvatar().getID());
+		return json;
 	}
 
 	private Message[] listen(ChatUser user, String listenId) {
@@ -135,14 +214,7 @@ public class OutputController implements Controller {
 		}
 	}
 	
-	private ControllerOutput output(ChatUser user, HttpServletRequest request) {
-//		response.setContentType("text/html");
-//		response.setStatus(200);
-//		response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate, private, max-stale=0, post-check=0, pre-check=0");
-//		response.setHeader("Connection", "close");
-//		response.setHeader("Pragma", "no-cache");
-//		response.setHeader("Expires", "Mon, 26 Jul 1997 05:00:00 GMT"); // HTTP 1.1 
-//		response.setCharacterEncoding("UTF-8");
+	private ControllerOutput output(ChatUser user, Locale locale, HttpServletRequest request) {
 		ControllerOutput result = null;
 		try {
 			OutputType type = OutputType.getById(request.getParameter("output"));
@@ -150,12 +222,7 @@ public class OutputController implements Controller {
 			if (user != null) {
 				final String listenid = request.getParameter("listenid");
 				logger.debug(user + 	" starts to listen with id " + listenid);
-				String lang = request.getParameter("lang");
-				if (lang == null) {
-					lang = "de";
-				}
-				Locale locale = new Locale(lang);
-	
+				
 				String htmlString = request.getParameter("html");
 				boolean html = htmlString == null || Boolean.parseBoolean(htmlString);
 				if (type == OutputType.ASYNC) {
@@ -305,11 +372,12 @@ public class OutputController implements Controller {
 									typeClass += "question";
 									break;
 								}
+								String anchorID = "linkNo" + ANCHOR_COUNT.getAndIncrement();
 								if (live && seg.getPreview() != null) {
 									text = StringEscapeUtils.escapeHtml4(text);
-									content = String.format("<a target=\"_blank\" onmouseover=\"preview(this, false);\" href=\"%1$s\" data-preview=\"%3$s\"><i class=\"" + typeClass + "\" />&nbsp;%2$s</a>", content, text, seg.getPreview()); 
+									content = String.format("<a id=" + anchorID + " target=\"_blank\" href=\"%1$s\" data-preview=\"%3$s\" data-pinky=\"%4$s\"><i class=\"" + typeClass + "\" />&nbsp;%2$s</a><script type=\"text/javascript\">tooltipify($('#" + anchorID + "'));</script>", content, text, seg.getPreview(), seg.getPinky()); 
 								} else {
-									content = String.format("<a target=\"_blank\" href=\"%1$s\"><i class=\"" + typeClass + "\" />&nbsp;%2$s</a>", content, text); 
+									content = String.format("<a id=" + anchorID + " target=\"_blank\" href=\"%1$s\"><i class=\"" + typeClass + "\" />&nbsp;%2$s</a>", content, text); 
 								}
 							} else {
 								content = seg.getContent();
@@ -322,6 +390,9 @@ public class OutputController implements Controller {
 						lineBuilder.append(' ');
 					}
 					String line;
+					if (html) {
+						sb.append("<p>");
+					}
 					ChatUser origin = msg.getOrigin();
 					if (origin != null) {
 						String name = origin.getUserName();
@@ -345,7 +416,7 @@ public class OutputController implements Controller {
 					sb.append(line);
 					sb.append('\n');
 					if (html) {
-						sb.append("<br />");
+						sb.append("</p>");
 					}
 					if (profileScript != null) {
 						appender.append(profileScript);

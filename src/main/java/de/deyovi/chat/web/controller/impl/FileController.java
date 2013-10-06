@@ -1,38 +1,30 @@
 package de.deyovi.chat.web.controller.impl;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import de.deyovi.chat.core.constants.ChatConstants.ImageSize;
+import de.deyovi.chat.core.dao.ImageDAO;
+import de.deyovi.chat.core.dao.impl.DefaultImageDAO;
+import de.deyovi.chat.core.entities.ImageEntity;
 import de.deyovi.chat.core.objects.ChatUser;
-import de.deyovi.chat.core.services.ChatUserService;
-import de.deyovi.chat.core.services.impl.DefaultChatUserService;
-import de.deyovi.chat.core.utils.ChatConfiguration;
-import de.deyovi.chat.core.utils.PasswordUtil;
-import de.deyovi.chat.web.SessionParameters;
-import de.deyovi.chat.web.controller.ControllerJSONOutput;
+import de.deyovi.chat.core.services.FileStoreService;
+import de.deyovi.chat.core.services.impl.DefaultFileStoreService;
 import de.deyovi.chat.web.controller.ControllerOutput;
 import de.deyovi.chat.web.controller.ControllerStatusOutput;
 import de.deyovi.chat.web.controller.ControllerStreamOutput;
-import de.deyovi.chat.web.controller.ControllerViewOutput;
 import de.deyovi.chat.web.controller.Mapping;
 import de.deyovi.chat.web.controller.Mapping.MatchedMapping;
-import de.deyovi.json.impl.DefaultJSONObject;
 
 /**
  * Controller for general Input (talking and uploading) and some additional actions
@@ -41,11 +33,14 @@ import de.deyovi.json.impl.DefaultJSONObject;
  */
 public class FileController extends AbstractFormController {
 
+	private static final String DB_IMAGE_PREFIX = "db.image.";
 	private static final Logger logger = LogManager.getLogger(FileController.class);
 	private static final Mapping PATH_CONTENT= new DefaultMapping("content");
-	private static final Mapping[] PATHES = new Mapping[] { PATH_CONTENT };
+	private static final Mapping PATH_DATA= new DefaultMapping("data");
+	private static final Mapping[] PATHES = new Mapping[] { PATH_CONTENT, PATH_DATA };
 
-	private final ChatUserService chatUserService = DefaultChatUserService.getInstance();
+	private final ImageDAO imageDAO = DefaultImageDAO.getInstance();
+	private final FileStoreService fileStore = DefaultFileStoreService.getInstance();
 	
 	@Override	
 	public Mapping[] getMappings() {
@@ -55,11 +50,38 @@ public class FileController extends AbstractFormController {
 	@Override
 	public ControllerOutput process(MatchedMapping matchedPath, ChatUser user, HttpServletRequest request, HttpServletResponse response) {
 		Mapping path = matchedPath.getMapping();
-		if (path == PATH_CONTENT) {
-			return new ControllerStatusOutput(404);
+		String payload = matchedPath.getPayload();
+		if (path == PATH_CONTENT || path == PATH_DATA) {
+			if (payload.startsWith(DB_IMAGE_PREFIX)) {
+				int lastDot = payload.lastIndexOf('.');
+				String sizeStr = payload.substring(DB_IMAGE_PREFIX.length(), lastDot);
+				long id = Long.parseLong(payload.substring(lastDot));
+				ImageSize size = ImageSize.getByPrefix(sizeStr);
+				ImageEntity imageEntity = imageDAO.findByID(id);
+				byte[] bytes;
+				switch (size) {
+				default:
+				case ORIGINAL:
+					bytes = imageEntity.getOriginal();		
+					break;
+				case PINKY:
+					bytes = imageEntity.getPinkynail();		
+					break;
+				case PREVIEW:
+					bytes = imageEntity.getPreview();		
+					break;
+				case THUMBNAIL:
+					bytes = imageEntity.getThumbnail();					
+					break;
+				}
+				ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+				return new ControllerStreamOutput("image/jpeg", bytes.length, bis);
+			} else {
+				return new ControllerStreamOutput("image/jpeg", -1, fileStore.load(payload));
+			}
 		} else  {
 			ServletContext context = request.getServletContext();
-			return getLocalFile(path.getPathAsString(), matchedPath.getPayload(), context);
+			return getLocalFile(path.getPathAsString(), payload, context);
 		}
 	}
 		
