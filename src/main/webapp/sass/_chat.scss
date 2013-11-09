@@ -28,9 +28,12 @@ textarea {
 	bottom: 0;
 /* 	height: 2.8em; */
 /* 	line-height: 2.8em; */
-	background: $secondary-color;
+	background: rgba(32, 39, 44, 0.7);
 	width: 100%;
 	padding: 0.4em;
+	a, label {
+	    color: #ffffff;
+	}
 }
 
 #signal {
@@ -82,9 +85,9 @@ textarea {
 	color: white;
 }
 
-#roomMateList,#neighbourList {
-	a.userLink {
-		color:white;
+#roomMateList,#neighbourList,#mediaList {
+	a.userLink, a.mediaLink {
+		color:#ffffff;
 	}
 }
 

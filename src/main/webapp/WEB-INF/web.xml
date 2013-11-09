@@ -13,6 +13,19 @@
 		<servlet-class>de.deyovi.chat.web.ChatFacade</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
+    <servlet>
+		<servlet-name>ChatSocket</servlet-name>
+		<servlet-class>de.deyovi.chat.web.ChatSocket</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+    <servlet>
+        <servlet-name>jsp</servlet-name>
+        <servlet-class>org.apache.jasper.servlet.JspServlet</servlet-class>
+        <init-param>
+            <param-name>development</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </servlet>
 	<servlet-mapping>
 		<servlet-name>ChatFacade</servlet-name>
 		<url-pattern></url-pattern>
@@ -29,8 +42,15 @@
 		<servlet-name>ChatFacade</servlet-name>
 		<url-pattern>/content/*</url-pattern>
 	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>ChatSocket</servlet-name>
+		<url-pattern>/socket/*</url-pattern>
+	</servlet-mapping>
 	<data-source>
 		<name>PSQLThemis</name>
+        <!--
+        <class-name>org.hsqldb.jdbcDriver</class-name>
+        -->
 		<class-name>org.postgresql.Driver</class-name>
 		<url>jdbc:postgresql://themis:5432/yourchat</url>
 		<user>chat</user>

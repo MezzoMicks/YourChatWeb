@@ -6,16 +6,18 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import de.deyovi.chat.core.services.CommandInterpreter;
+import de.deyovi.chat.core.services.impl.DefaultCommandInterpreter;
+import de.deyovi.chat.facades.InputFacade;
+import de.deyovi.chat.facades.impl.DefaultInputFacade;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import de.deyovi.chat.core.objects.ChatUser;
 import de.deyovi.chat.core.objects.Segment;
-import de.deyovi.chat.core.services.CommandProcessorService;
 import de.deyovi.chat.core.services.InputProcessorService;
-import de.deyovi.chat.core.services.impl.DefaultCommandProcessorService;
 import de.deyovi.chat.core.services.impl.DefaultInputProcessorService;
-import de.deyovi.chat.web.controller.ControllerHTMLOutput;
 import de.deyovi.chat.web.controller.ControllerOutput;
 import de.deyovi.chat.web.controller.ControllerStatusOutput;
 import de.deyovi.chat.web.controller.Mapping;
@@ -38,8 +40,8 @@ public class InputController extends AbstractFormController {
 	private static final String PARAM_MESSAGE = "message";
 	private static final String PARAM_TALK_FILE = "talkfile";
 
-	private final CommandProcessorService commandService = DefaultCommandProcessorService.getInstance();
 	private final InputProcessorService inputService = DefaultInputProcessorService.getInstance();
+    private final InputFacade inputFacade = DefaultInputFacade.getInstance();
 	
 	@Override	
 	public Mapping[] getMappings() {
@@ -53,11 +55,11 @@ public class InputController extends AbstractFormController {
 			talk(user, request);
 			return new ControllerStatusOutput(200);
 		} else if (path == PATH_AWAY) {
-			commandService.away(user, !user.isAway());
+			new DefaultCommandInterpreter(inputService).away(user, !user.isAway());
 			return new ControllerStatusOutput(200);
 		} else if (path == PATH_JOIN) {
 			Map<String, Object> parameters = getParameters(request);
-			commandService.join(user, (String) parameters.get(PARAM_ROOM));
+            new DefaultCommandInterpreter(inputService).join(user, (String) parameters.get(PARAM_ROOM));
 			return new ControllerStatusOutput(200);
 		} else {
 			return null;
@@ -67,6 +69,7 @@ public class InputController extends AbstractFormController {
 	private void talk(ChatUser user, HttpServletRequest request) {
 		Map<String, Object> parameters = getParameters(request);
 		String message = (String) parameters.get(PARAM_MESSAGE);
+		message = StringEscapeUtils.unescapeHtml4(message);
 		Object fileObject = parameters.get(PARAM_TALK_FILE);
 		FileUpload upload;
 		if (fileObject != null && fileObject instanceof FileUpload) {
@@ -92,13 +95,7 @@ public class InputController extends AbstractFormController {
 		if (logger.isDebugEnabled()) {
 			logger.debug(user + " starting process() for " + message);
 		}
-		Segment[] segments = inputService.process(user, message, uploadStream, uploadName);
-		if (segments != null) {
-			user.getCurrentRoom().talk(user, segments);
-		}
-		if (logger.isDebugEnabled()) {
-			logger.debug(user + " said " + message);
-		}
+		inputFacade.talk(user, message, uploadStream, uploadName);
 	}
 
 }

@@ -105,7 +105,25 @@
     },
 
     create : function ($target) {
-      var $tip = $(this.settings.tipTemplate(this.selector($target), $('<div></div>').html($target.attr('title')).html())),
+      var content = $target.attr('title');
+	  console.log(content);
+	  
+      if (content.indexOf('$') == 0) {
+    	  content = content.substring(1);
+          if (content.indexOf('img:') == 0) {
+        	  content = content.substring(4, content.length);
+        	  var alt = '';
+        	  var altIx = content.indexOf(',');
+        	  if (content.indexOf(',') >= 0) {
+        		  alt = content.substring(altIx);
+        		  content = content.substring(0, altIx);
+        	  }
+        	  console.log(content);
+        	  content = '<img src="' + urlPrefix + content + '" alt="' + alt + '" />';
+          }
+      }
+    	
+      var $tip = $(this.settings.tipTemplate(this.selector($target), $('<div></div>').html(content).html())),
           classes = this.inheritable_classes($target);
 
       $tip.addClass(classes).appendTo(this.settings.appendTo);
@@ -206,3 +224,4 @@
     reflow : function () {}
   };
 }(Foundation.zj, this, this.document));
+

@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import de.deyovi.chat.core.objects.ChatUser;
 import de.deyovi.chat.core.objects.Profile;
@@ -20,8 +22,6 @@ import de.deyovi.chat.web.controller.ControllerJSONOutput;
 import de.deyovi.chat.web.controller.ControllerOutput;
 import de.deyovi.chat.web.controller.Mapping;
 import de.deyovi.chat.web.controller.Mapping.MatchedMapping;
-import de.deyovi.json.JSONObject;
-import de.deyovi.json.impl.DefaultJSONObject;
 
 public class ProfileController extends AbstractFormController {
 
@@ -77,7 +77,12 @@ public class ProfileController extends AbstractFormController {
 				logger.debug(user + " adds image " + image.getFileName());
 			}
 			Long newID = profileService.addGalleryImage(user, image.getFileName(), image.getStream(), title);
-			return new DefaultJSONObject("id", newID);
+			try {
+				return new JSONObject().put("id", newID);
+			} catch (JSONException e) {
+				logger.error(e);
+				return null;
+			}
 		} else {
 			return null;
 		}
@@ -92,7 +97,12 @@ public class ProfileController extends AbstractFormController {
 				logger.debug(user + " sets avatar " + image.getFileName());
 			}
 			Long newID = profileService.setAvatarImage(user, image.getFileName(), image.getStream(), title);
-			return new DefaultJSONObject("id", newID);
+			try {
+				return new JSONObject().put("id", newID);
+			} catch (JSONException e) {
+				logger.error(e);
+				return null;
+			}
 		} else {
 			return null;
 		}
@@ -102,7 +112,7 @@ public class ProfileController extends AbstractFormController {
 	private void delete(ChatUser user, HttpServletRequest request) {
 		Map<String, Object> parameters = getParameters(request);
 		Long id = Long.parseLong((String) parameters.get(PARAM_IMAGE_ID));
-		profileService.deleteImage(user, id.longValue());
+		profileService.deleteImage(user, id);
 	}
 	
 	private void change(ChatUser user, HttpServletRequest request) {

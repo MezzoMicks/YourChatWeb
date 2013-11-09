@@ -1,7 +1,5 @@
 package de.deyovi.chat.web;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.util.LinkedList;
@@ -20,8 +18,6 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import de.deyovi.chat.core.objects.ChatUser;
-import de.deyovi.chat.core.services.ChatUserService;
-import de.deyovi.chat.core.services.impl.DefaultChatUserService;
 import de.deyovi.chat.core.utils.ChatConfiguration;
 import de.deyovi.chat.core.utils.ChatUtils;
 import de.deyovi.chat.web.controller.Controller;
@@ -29,7 +25,6 @@ import de.deyovi.chat.web.controller.ControllerHTMLOutput;
 import de.deyovi.chat.web.controller.ControllerJSONOutput;
 import de.deyovi.chat.web.controller.ControllerOutput;
 import de.deyovi.chat.web.controller.ControllerRedirectOutput;
-import de.deyovi.chat.web.controller.ControllerStatusOutput;
 import de.deyovi.chat.web.controller.ControllerStreamOutput;
 import de.deyovi.chat.web.controller.ControllerViewOutput;
 import de.deyovi.chat.web.controller.Mapping;
@@ -46,8 +41,6 @@ public class ChatFacade extends HttpServlet {
 	private static final long serialVersionUID = -8570145465987583123L;
 	private static final Logger logger = LogManager.getLogger(ChatFacade.class);
 
-	private final ChatUserService userService = DefaultChatUserService.getInstance();
-
 	private final TreeMap<Mapping, Controller> controllers = new TreeMap<Mapping, Controller>();
 	private final String urlPrefix;
 
@@ -61,12 +54,12 @@ public class ChatFacade extends HttpServlet {
 			try {
 				Class<?> clazz = Class.forName(className);
 				if ((clazz.getModifiers() & Modifier.ABSTRACT) == 0 && (clazz.getModifiers() & Modifier.INTERFACE) == 0 ) {
-					if (ChatUtils.checkInheritance(clazz, Controller.class)) {
-						controllers.add((Class<Controller>) clazz);
+					if (Controller.class.isAssignableFrom(clazz)) {
+						controllers.add(clazz);
 					}
 				}
 			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
+				logger.error("Error while scanning Controllers", e);
 			}
 		}
 		for (Class clazz : controllers) {
@@ -138,7 +131,7 @@ public class ChatFacade extends HttpServlet {
 					response.setStatus(result.getStatus());
 					response.setContentType(result.getContentType());
 					if (result instanceof ControllerJSONOutput) {
-						((ControllerJSONOutput) result).getJSON().appendTo(response.getWriter());
+						((ControllerJSONOutput) result).getJSON().write(response.getWriter());
 					} else if (result instanceof ControllerHTMLOutput) {
 						response.getWriter().write(((ControllerHTMLOutput) result).getHtml());
 					} else if (result instanceof ControllerViewOutput) {

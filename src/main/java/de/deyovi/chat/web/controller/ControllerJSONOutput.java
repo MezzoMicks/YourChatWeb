@@ -1,6 +1,6 @@
 package de.deyovi.chat.web.controller;
 
-import de.deyovi.json.JSONObject;
+import org.json.JSONObject;
 
 
 public class ControllerJSONOutput implements ControllerOutput {
@@ -23,7 +23,7 @@ public class ControllerJSONOutput implements ControllerOutput {
 	
 	@Override
 	public int getContentLength() {
-		return json.getSize();
+		return json.length();
 	}
 	
 	@Override
