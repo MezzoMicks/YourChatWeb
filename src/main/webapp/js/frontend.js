@@ -229,8 +229,6 @@
 	}
 
 	$().ready(function() {
-		$(document).foundation();
-		
 		$('#chat-screen').mouseover(function(event){
 		});
 		

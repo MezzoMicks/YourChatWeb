@@ -354,3 +354,8 @@ function doSaveProfile(field, value, callback) {
 	});
 }
 
+$(document).ready(function() {
+
+	$(document).foundation();
+	
+});

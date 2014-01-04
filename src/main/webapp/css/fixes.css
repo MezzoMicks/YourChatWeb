@@ -5,7 +5,7 @@
 @media only screen and (min-width: 768px) {
   /* line 2, ../sass/fixes.scss */
   .section-container.auto > section.active > .title {
-    top: 1px;
+    border-bottom: 2px solid #20272c;
   }
 }
 @media only screen and (min-width: 768px) {
@@ -16,15 +16,13 @@
   }
 }
 
+/* line 16, ../sass/fixes.scss */
+.section-container.auto > section > .title {
+  top: 1px;
+}
 @media only screen and (max-width: 768px) {
   /* line 16, ../sass/fixes.scss */
   .section-container.auto > section > .title {
     border-bottom: 2px solid white;
-  }
-}
-@media only screen and (min-width: 768px) {
-  /* line 16, ../sass/fixes.scss */
-  .section-container.auto > section > .title {
-    top: 5px;
   }
 }

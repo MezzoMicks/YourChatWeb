@@ -2,7 +2,7 @@
 	> .title {
 		font-weight: bold;
 		@media only screen and (min-width: 768px) {
-			top: 1px;
+			border-bottom: 2px solid rgb(32, 39, 44);
 		}
 	}
 	> .content {
@@ -14,11 +14,9 @@
 }
 .section-container.auto > section {
 	> .title {
+		top: 1px;
 		@media only screen and (max-width: 768px) {
 			border-bottom: 2px solid white;
-		}
-		@media only screen and (min-width: 768px) {
-			top: 5px;
 		}
 	}
 }
