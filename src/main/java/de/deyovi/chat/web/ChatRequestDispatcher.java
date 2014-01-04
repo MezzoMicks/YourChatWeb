@@ -55,7 +55,14 @@ public class ChatFacade extends HttpServlet {
 				Class<?> clazz = Class.forName(className);
 				if ((clazz.getModifiers() & Modifier.ABSTRACT) == 0 && (clazz.getModifiers() & Modifier.INTERFACE) == 0 ) {
 					if (Controller.class.isAssignableFrom(clazz)) {
-						controllers.add(clazz);
+						de.deyovi.chat.web.controller.annotations.Controller annotation = clazz.getAnnotation(de.deyovi.chat.web.controller.annotations.Controller.class);
+						boolean ignore = false;
+						if (annotation != null && annotation.disabled()) {
+							ignore = true;
+						}
+						if (!ignore) {
+							controllers.add(clazz);
+						}
 					}
 				}
 			} catch (ClassNotFoundException e) {
