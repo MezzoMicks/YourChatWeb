@@ -20,6 +20,8 @@ import org.apache.log4j.Logger;
 import de.deyovi.chat.core.objects.ChatUser;
 import de.deyovi.chat.core.utils.ChatConfiguration;
 import de.deyovi.chat.core.utils.ChatUtils;
+import de.deyovi.chat.facades.SetupFacade;
+import de.deyovi.chat.facades.impl.DefaultSetupFacade;
 import de.deyovi.chat.web.controller.Controller;
 import de.deyovi.chat.web.controller.ControllerHTMLOutput;
 import de.deyovi.chat.web.controller.ControllerJSONOutput;
@@ -33,21 +35,22 @@ import de.deyovi.chat.web.controller.Mapping.MatchedMapping;
 /**
  * Servlet implementation class ChatFacade
  */
-public class ChatFacade extends HttpServlet {
+public class ChatRequestDispatcher extends HttpServlet {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -8570145465987583123L;
-	private static final Logger logger = LogManager.getLogger(ChatFacade.class);
+	private static final Logger logger = LogManager.getLogger(ChatRequestDispatcher.class);
 
+	private final SetupFacade setupFacade = DefaultSetupFacade.getInstance();
 	private final TreeMap<Mapping, Controller> controllers = new TreeMap<Mapping, Controller>();
 	private final String urlPrefix;
 
 	/**
 	 * Default constructor.
 	 */
-	public ChatFacade() {
+	public ChatRequestDispatcher() {
 		List<Class> controllers = new LinkedList<Class>();
 		List<String> classes = ChatUtils.getClassNamesFromPackage("de.deyovi.chat.web", true);
 		for (String className : classes) {
@@ -108,6 +111,7 @@ public class ChatFacade extends HttpServlet {
 	}
 
 	private void doGeneral(HttpServletRequest request, HttpServletResponse response) {
+		ControllerOutput result;
 		String requestPath = request.getPathInfo();
 		if (requestPath == null || requestPath.isEmpty()) {
 			requestPath = "/";
@@ -115,58 +119,61 @@ public class ChatFacade extends HttpServlet {
 			requestPath = requestPath.substring(1);
 		}
 		logger.debug("called doGeneral with requestPath=" + requestPath);
-		Controller controller = null;
-		MatchedMapping matchedPath = null;
-		for (Mapping pathPrefix : controllers.descendingKeySet()) {
-			MatchedMapping tmpPath = pathPrefix.match(requestPath, request.getMethod());
-			if (tmpPath != null) {
-				matchedPath = tmpPath;
-				controller = controllers.get(pathPrefix);
-				break;
+		if (setupFacade.isInitialized() || requestPath.equals("init")) {
+			Controller controller = null;
+			MatchedMapping matchedPath = null;
+			for (Mapping pathPrefix : controllers.descendingKeySet()) {
+				MatchedMapping tmpPath = pathPrefix.match(requestPath, request.getMethod());
+				if (tmpPath != null) {
+					matchedPath = tmpPath;
+					controller = controllers.get(pathPrefix);
+					break;
+				}
 			}
-		}
-		if (controller == null) {
-			response.setStatus(403);
-		} else {
-			try {
+			if (controller == null) {
+				result = null;
+			} else {
 				HttpSession session = request.getSession();
 				ChatUser user = (ChatUser) session.getAttribute(SessionParameters.USER);
-				ControllerOutput result = controller.process(matchedPath, user, request, response);
-				if (result == null) {
-					response.sendError(404);
-				} else {
-					response.setStatus(result.getStatus());
-					response.setContentType(result.getContentType());
-					if (result instanceof ControllerJSONOutput) {
-						((ControllerJSONOutput) result).getJSON().write(response.getWriter());
-					} else if (result instanceof ControllerHTMLOutput) {
-						response.getWriter().write(((ControllerHTMLOutput) result).getHtml());
-					} else if (result instanceof ControllerViewOutput) {
-						ControllerViewOutput viewOutput = (ControllerViewOutput) result;
-						if (viewOutput.getParameters() != null) {
-							for (Entry<String, Object> parameter : viewOutput.getParameters().entrySet()) {
-								request.setAttribute(parameter.getKey(), parameter.getValue());
-							}
-						}
-						request.setAttribute("urlPrefix", urlPrefix);
-						logger.debug("forwarding to:" + viewOutput.getTargetJSP());
-				        request.getRequestDispatcher(viewOutput.getTargetJSP()).forward(request, response);
-					} else if (result instanceof ControllerRedirectOutput) {
-						String target = ((ControllerRedirectOutput) result).getTarget();
-						if (target.startsWith("/")) {
-							target = request.getContextPath() + target;
-							System.out.println(target);
-						}
-						response.sendRedirect(target);
-					} else if (result instanceof ControllerStreamOutput) {
-						IOUtils.copy(((ControllerStreamOutput) result).getStream(), response.getOutputStream());
-					}
-				}
-			} catch (Exception e) {
-				logger.error("Error while processing request:", e);
+				result = controller.process(matchedPath, user, request, response);
 			}
+		} else {
+			result = new ControllerRedirectOutput("/setup/init");
 		}
-
+		
+		try {
+			if (result == null) {
+				response.sendError(404);
+			} else {
+				response.setStatus(result.getStatus());
+				response.setContentType(result.getContentType());
+				if (result instanceof ControllerJSONOutput) {
+					((ControllerJSONOutput) result).getJSON().write(response.getWriter());
+				} else if (result instanceof ControllerHTMLOutput) {
+					response.getWriter().write(((ControllerHTMLOutput) result).getHtml());
+				} else if (result instanceof ControllerViewOutput) {
+					ControllerViewOutput viewOutput = (ControllerViewOutput) result;
+					if (viewOutput.getParameters() != null) {
+						for (Entry<String, Object> parameter : viewOutput.getParameters().entrySet()) {
+							request.setAttribute(parameter.getKey(), parameter.getValue());
+						}
+					}
+					request.setAttribute("urlPrefix", urlPrefix);
+					logger.debug("forwarding to:" + viewOutput.getTargetJSP());
+			        request.getRequestDispatcher(viewOutput.getTargetJSP()).forward(request, response);
+				} else if (result instanceof ControllerRedirectOutput) {
+					String target = ((ControllerRedirectOutput) result).getTarget();
+					if (target.startsWith("/")) {
+						target = request.getServletContext().getContextPath() + target;
+					}
+					response.sendRedirect(target);
+				} else if (result instanceof ControllerStreamOutput) {
+					IOUtils.copy(((ControllerStreamOutput) result).getStream(), response.getOutputStream());
+				}
+			}
+		} catch (Exception e) {
+			logger.error("Error while processing request:", e);
+		}
 	}
 
 }
