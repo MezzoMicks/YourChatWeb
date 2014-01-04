@@ -15,7 +15,9 @@ import org.json.JSONObject;
 import de.deyovi.chat.core.objects.ChatUser;
 import de.deyovi.chat.core.utils.ChatConfiguration;
 import de.deyovi.chat.facades.SessionFacade;
+import de.deyovi.chat.facades.SetupFacade;
 import de.deyovi.chat.facades.impl.DefaultSessionFacade;
+import de.deyovi.chat.facades.impl.DefaultSetupFacade;
 import de.deyovi.chat.web.SessionParameters;
 import de.deyovi.chat.web.controller.ControllerJSONOutput;
 import de.deyovi.chat.web.controller.ControllerOutput;
@@ -39,7 +41,7 @@ public class SessionController extends AbstractFormController {
 	private static final Mapping PATH_SUGAR = new DefaultMapping("sugar");
 	private static final Mapping[] PATHES = new Mapping[] { PATH_CHAT, PATH_LOGIN, PATH_LOGOUT, PATH_REGISTER, PATH_SUGAR };
 
-	private final SessionFacade facade = DefaultSessionFacade.getInstance();
+	private final SessionFacade sessionFacade = DefaultSessionFacade.getInstance();
 	
 	@Override	
 	public Mapping[] getMappings() {
@@ -50,7 +52,7 @@ public class SessionController extends AbstractFormController {
 	public ControllerOutput process(MatchedMapping matchedPath, ChatUser user, HttpServletRequest request, HttpServletResponse response) {
 		Mapping path = matchedPath.getMapping();
 		if (path == PATH_CHAT) {
-			return redirectUser(request.getSession(), user);
+			return forwardUser(request.getSession(), user);
 		} else if (path == PATH_LOGIN) {
 			return login(user, request);
 		} else if (path == PATH_LOGOUT) {
@@ -94,11 +96,11 @@ public class SessionController extends AbstractFormController {
 			String password = request.getParameter("passwordHash");
 			String inviteKey = request.getParameter("keyHash");
 			String sugar = (String) session.getAttribute(SessionParameters.SUGAR);
-			ChatUser newUser = facade.register(username, password, inviteKey, sugar);
-			return redirectUser(session, newUser);
+			ChatUser newUser = sessionFacade.register(username, password, inviteKey, sugar);
+			return forwardUser(session, newUser);
 		} else {
 			logger.error("Register without session!");
-			return new ControllerViewOutput("WEB-INF/jsp/login.jsp", null);
+			return new ControllerViewOutput("login", null);
 		}
 	}
 	
@@ -108,7 +110,7 @@ public class SessionController extends AbstractFormController {
 			String username = request.getParameter("username");
 			String password = request.getParameter("passwordHash");
 			String sugar = (String) session.getAttribute(SessionParameters.SUGAR);
-			ChatUser newUser = facade.login(username, password, sugar);
+			ChatUser newUser = sessionFacade.login(username, password, sugar);
 			if (newUser != null) {
 				session.setAttribute(SessionParameters.USER, newUser);
 				session.setAttribute(SessionParameters.LOGOUT_KEY, newUser.getListenId());
@@ -116,15 +118,15 @@ public class SessionController extends AbstractFormController {
 				return new ControllerRedirectOutput("/");
 			} else {
 				session.invalidate();
-				return new ControllerViewOutput("WEB-INF/jsp/login.jsp", null);
+				return new ControllerViewOutput("login", null);
 			}
 		} else {
 			logger.error("Login without session!");
-			return new ControllerViewOutput("WEB-INF/jsp/login.jsp", null);
+			return new ControllerViewOutput("login", null);
 		}
 	}
 
-	private ControllerOutput redirectUser(HttpSession session, ChatUser newUser) {
+	private ControllerOutput forwardUser(HttpSession session, ChatUser newUser) {
 		if (newUser != null && newUser.getCurrentRoom() == null) {
             newUser = null;
             session.invalidate();
@@ -132,16 +134,16 @@ public class SessionController extends AbstractFormController {
         if (newUser == null) {
 			Map<String, Object> loginParameters = new HashMap<String, Object>(1);
 			loginParameters.put("keyRequired", ChatConfiguration.isInvitationRequired());
-			return new ControllerViewOutput("WEB-INF/jsp/login.jsp", loginParameters);
+			return new ControllerViewOutput("login", loginParameters);
 		} else {
-			return new ControllerViewOutput("WEB-INF/jsp/chat.jsp", null);
+			return new ControllerViewOutput("chat", null);
 		}
 	}
 
 	public ControllerOutput sugar(HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		if (session != null) {
-			String sugar = facade.getSugar();
+			String sugar = sessionFacade.getSugar();
 			session = request.getSession(true);
 			String userName = request.getParameter("user");
 			session.setAttribute(SessionParameters.SUGAR, sugar + userName);
