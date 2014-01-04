@@ -33,7 +33,7 @@ public class ControllerViewOutput implements ControllerOutput {
 	}
 	
 	public String getTargetJSP() {
-		return targetJSP;
+		return "/WEB-INF/jsp/" + targetJSP + ".jsp";
 	}
 
 	public Map<String, Object> getParameters() {
