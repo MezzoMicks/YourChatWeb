@@ -9,8 +9,8 @@
 		<listener-class>de.deyovi.chat.web.ChatContext</listener-class>
 	</listener>
 	<servlet>
-		<servlet-name>ChatFacade</servlet-name>
-		<servlet-class>de.deyovi.chat.web.ChatFacade</servlet-class>
+		<servlet-name>ChatRequestDispatcher</servlet-name>
+		<servlet-class>de.deyovi.chat.web.ChatRequestDispatcher</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
     <servlet>
@@ -27,33 +27,15 @@
         </init-param>
     </servlet>
 	<servlet-mapping>
-		<servlet-name>ChatFacade</servlet-name>
+		<servlet-name>ChatRequestDispatcher</servlet-name>
 		<url-pattern></url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>ChatFacade</servlet-name>
 		<url-pattern>/app/*</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>ChatFacade</servlet-name>
 		<url-pattern>/data/*</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>ChatFacade</servlet-name>
 		<url-pattern>/content/*</url-pattern>
+		<url-pattern>/setup/*</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>ChatSocket</servlet-name>
 		<url-pattern>/socket/*</url-pattern>
 	</servlet-mapping>
-	<data-source>
-		<name>PSQLThemis</name>
-        <!--
-        <class-name>org.hsqldb.jdbcDriver</class-name>
-        -->
-		<class-name>org.postgresql.Driver</class-name>
-		<url>jdbc:postgresql://themis:5432/yourchat</url>
-		<user>chat</user>
-		<password>chat</password>
-	</data-source>
 </web-app>
