@@ -3,7 +3,7 @@ $primary-color: #0E0E29;
 $secondary-color: #738B9D;
 html, body {
 	height: 100%;
-	background: #20272C;
+	background: $body-bg;
 }
 
 textarea {
@@ -17,9 +17,16 @@ textarea {
 /* 	margin-bottom: 100px; */
 }
 
+.top-bar-section {
+  max-width: $row-width;
+  margin: 0 auto;
+}
+
 #chat {
 	position: relative;
-	background: #FFC073;
+  background: #fff; 
+  background-position-y: 50%;
+  background-position-x: 50%;
 }
 
 #chat-input {
@@ -28,7 +35,7 @@ textarea {
 	bottom: 0;
 /* 	height: 2.8em; */
 /* 	line-height: 2.8em; */
-	background: rgba(32, 39, 44, 0.7);
+	background: rgba(30, 30, 33, 0.8);
 	width: 100%;
 	padding: 0.4em;
 	a, label {
@@ -46,7 +53,7 @@ textarea {
 }
 
 #sidebar {
-	background: #20272C; 
+	background: $body-bg; 
 	color: white;
 	border-right: 2px solid white;
 }

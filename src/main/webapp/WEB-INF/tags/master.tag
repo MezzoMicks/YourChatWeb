@@ -23,7 +23,6 @@
 		<t:link rel="stylesheet" href="/css/fixes.css" type="text/css" />
 		<!--<![endif] -->
 		<script>
-			urlPrefix = "<c:out value="${requestScope.urlPrefix}"/>";
 			listenID = "<c:out value="${sessionScope.user.listenId}"/>";
 		</script>
 		<t:script src="/js/vendor/custom.modernizr.js" />
@@ -32,17 +31,25 @@
 		<t:script src="/js/jquery.form.min.js"/>
 		<t:script src="/js/jquery-ui.offcanvas.js"/>
 		<t:script src="/js/foundation/foundation.js"/>
+		<t:script src="/js/foundation/foundation.alerts.js"/>
 		<t:script src="/js/foundation/foundation.forms.js"/>
 		<t:script src="/js/foundation/foundation.section.js"/>
 		<t:script src="/js/foundation/foundation.topbar.js"/>
 		<t:script src="/js/foundation/foundation.tooltips.js"/>
 		<t:script src="/js/chat.js"/>
+		<c:url value="/" var="urlPrefix"></c:url>
+		<script type="text/javascript">
+			urlPrefix = "${urlPrefix}";
+		</script>
 		<%--include additional scripts, if present --%>
 		<c:if test="${not empty additionalScripts}">
 			${additionalScripts}
 		</c:if>
 	</head>
 	<body>
+		<section id="alerts">
+			
+		</section>
 		<jsp:doBody />
 	</body>
 </html>

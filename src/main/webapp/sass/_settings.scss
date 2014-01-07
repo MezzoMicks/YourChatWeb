@@ -28,7 +28,7 @@ $em-base: 16px !default;
 
 $default-float: left;
 
-$body-bg: #20272c;
+$body-bg: #26262C;
 // $body-font-color: #222;
 // $body-font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
 // $body-font-weight: normal;
@@ -454,10 +454,10 @@ $form-spacing: emCalc(8px);
 
 // Alert padding
 
-// $alert-padding-top: emCalc(11px);
+$alert-padding-top: emCalc(4px);
 // $alert-padding-default-float: $alert-padding-top;
 // $alert-padding-opposite-direction: $alert-padding-top + emCalc(10px);
-// $alert-padding-bottom: $alert-padding-top + emCalc(1px);
+$alert-padding-bottom: $alert-padding-top + emCalc(1px);
 
 // Text style
 
@@ -475,16 +475,16 @@ $form-spacing: emCalc(8px);
 // $alert-border-style: solid;
 // $alert-border-width: 1px;
 // $alert-border-color: darken($primary-color, $alert-function-factor);
-// $alert-bottom-margin: emCalc(20px);
+$alert-bottom-margin: emCalc(2px);
 
 // Close Button style
 
-// $alert-close-color: #333;
-// $alert-close-position: emCalc(5px);
-// $alert-close-font-size: emCalc(22px);
-// $alert-close-opacity: 0.3;
+$alert-close-color: #fff;
+$alert-close-position: emCalc(0px);
+$alert-close-font-size: emCalc(20px);
+$alert-close-opacity: 1;
 // $alert-close-opacity-hover: 0.5;
-// $alert-close-padding: 5px 4px 4px;
+$alert-close-padding: 0px;
 
 // Border radius
 
@@ -1001,9 +1001,9 @@ $section-function-factor: 10%;
 // Titles
 
 $section-title-color: #fff;
-$section-title-bg: #7E909D ;
-$section-title-bg-active: darken($section-title-bg, $section-function-factor);
-$section-title-bg-active-tabs: #20272C;
+$section-title-bg: #8B8B95 ;
+$section-title-bg-active: $body-bg;
+$section-title-bg-active-tabs: $body-bg;
 $section-title-bg-hover: darken($section-title-bg, $section-function-factor/2);
 
 // Border size
@@ -1018,7 +1018,7 @@ $section-font-size: emCalc(14px);
 
 // Control the color of the background and some size options
 
-$section-content-bg: #20272C;
+$section-content-bg: $body-bg;
 // $section-vertical-nav-min-width: emCalc(200px);
 // $section-vertical-tabs-title-width: emCalc(200px);
 $section-bottom-margin: 1em;
@@ -1203,7 +1203,8 @@ $section-bottom-margin: 1em;
 
 // Background color for the top bar
 
-$topbar-bg: #0E0E29 !default;
+//$topbar-bg: #0C0D1C !default;
+$topbar-bg: #8B8B95 !default;
 
 // Height and margin
 
@@ -1221,8 +1222,8 @@ $topbar-title-font-size: emCalc(14px);
 
 // Style the top bar dropdown elements
 
-$topbar-dropdown-bg: #242430;
-$topbar-dropdown-link-color: #7E9F91;
+$topbar-dropdown-bg: #8B8B95;
+$topbar-dropdown-link-color: #111;
 // $topbar-dropdown-link-bg: lighten($topbar-bg, 5%);
 // $topbar-dropdown-toggle-size: 5px;
 $topbar-dropdown-toggle-color: #7E9F91;
@@ -1230,7 +1231,7 @@ $topbar-dropdown-toggle-color: #7E9F91;
 
 // Set the link colors and styles for top-level nav
 
-// $topbar-link-color: #fff;
+$topbar-link-color: #111;
 // $topbar-link-color-hover: #fff;
 // $topbar-link-color-active: #fff;
 // $topbar-link-weight: bold;
@@ -1249,10 +1250,10 @@ $topbar-dropdown-label-font-size: emCalc(10px);
 // $topbar-menu-link-transform: uppercase;
 $topbar-menu-link-font-size: emCalc(12px);
 // $topbar-menu-link-weight: bold;
-// $topbar-menu-link-color: #fff;
-// $topbar-menu-icon-color: #fff;
-// $topbar-menu-link-color-toggled: #888;
-// $topbar-menu-icon-color-toggled: #888;
+$topbar-menu-link-color: #333;
+$topbar-menu-icon-color: #111;
+$topbar-menu-link-color-toggled: #333;
+$topbar-menu-icon-color-toggled: #333;
 
 // Transitions and breakpoint styles
 

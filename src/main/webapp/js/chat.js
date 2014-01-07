@@ -1,4 +1,4 @@
-
+var urlPrefix = "/";
 
 function listen(listenid, callback) {
 	var tS = new Date().getTime();
@@ -352,6 +352,35 @@ function doSaveProfile(field, value, callback) {
 			}
 		}
 	});
+}
+
+/**
+ * Accepts and displays the alerts, delivered as an array of json-objects
+ * lifespan (PERMANENT, AUTO_HIDE, NORMAL)
+ * level (ERROR,WARN,INFO)
+ * message (actual message to display)
+ * @param alerts
+ */
+function displayAlerts(alerts) {
+	var $alertContainer = $('#alerts');
+	for(var i = 0; i < alerts.length; i++) {
+	    var alert = alerts[i];
+	    var $alert = $('<div class="alertBox" data-alert>');
+	    if (alert.level == 'INFO') {
+	    	$alert.addClass('success');
+	    } else if (alert.level == 'ERROR') {
+	    	$alert.addClass('alert');
+	    }
+	    $alert.append(alert.message);
+	    if (alert.lifespan != 'PERMANENT') {
+	    	$closer = $('<a href="#" class="close"><i class="icon-remove"></i></a>');
+	    	$alert.append($closer);
+	    	if (alert.lifespan == 'AUTO_HIDE') {
+	    		setTimeout(1000*15, function() {$closer.click();});
+	    	}
+	    }
+	    $alertContainer.append($alert);
+	}
 }
 
 $(document).ready(function() {
