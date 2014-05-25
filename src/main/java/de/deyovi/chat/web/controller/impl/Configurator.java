@@ -1,5 +1,6 @@
 package de.deyovi.chat.web.controller.impl;
 
+import javax.inject.Inject;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
@@ -13,7 +14,8 @@ public class Configurator implements ServletContextListener {
 
 	private final static Logger logger = LogManager.getLogger(Configurator.class);
 
-	private final EntityService entityService = DefaultEntityService.getInstance();
+    @Inject
+	private EntityService entityService;
 	
 	@Override
 	public void contextDestroyed(ServletContextEvent arg0) {

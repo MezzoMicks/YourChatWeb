@@ -1,4 +1,9 @@
+	var stopped = false;
 
+	function stop() {
+		stopped = true;
+	}
+	
 	function chatResize() {
 		var $chat = $('#chat');
 		var $talk = $('#chat-input');
@@ -31,9 +36,10 @@
     function showBackground() {
         console.log("showBackground");
         var $chatScreen = $('#chat');
-        $chatScreen.css('background-color', '#' + $chatScreen.data('background'));
+        $chatScreen.css('background-color', '#' + $chatScreen.data('background-color'));
+        $chatScreen.css('color', getContrast50($chatScreen.data('background-color')))
         var bgImage = null;
-            console.log("before selected");
+        console.log("before selected");
         if ($('#showBackground').is(':checked')) {
             console.log("selected");
             bgImage = $chatScreen.data('background-image');
@@ -41,8 +47,13 @@
         if (bgImage != null) {
             $chatScreen.css('background-image', 'url(' + bgImage + ')');
         } else {
+
             $chatScreen.css('background-image', 'none');
         }
+    }
+
+    function getContrast50(hexcolor){
+        return (parseInt(hexcolor, 16) > 0xffffff/2) ? 'black':'white';
     }
 
 	function chatListen() {
@@ -52,9 +63,11 @@
 				$('head').append('<link id="favicon" rel="icon" href="favicon_talky.gif" type="image/x-icon">');
 			}
 			$('#chat-screen').append(data);
-			oldTimeout = window.setTimeout(function() { chatListen(); }, 500);
-			$('#signal').attr("src", "img/ampel.gif");
-			lastUpdate = new Date().getTime();
+			if (!stopped) {
+				oldTimeout = window.setTimeout(function() { chatListen(); }, 500);
+				$('#signal').attr("src", "img/ampel.gif");
+				lastUpdate = new Date().getTime();
+			}
 		});
 		if (typeof scrolling == 'undefined' || scrolling) { 
 			$('#chat-screen').scrollTop(5000000); 
@@ -85,8 +98,6 @@
 			$what.attr('title', "$img:" + pinky + "," + $what.text());
 			$what.attr('data-tooltip', '');
 		}
-//		console.log('calling it');
-//		$(document).foundation('tooltips');
 	}
 	
 	function appendUser(userList, user, withAka) {

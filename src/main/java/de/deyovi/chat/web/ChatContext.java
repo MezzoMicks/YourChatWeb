@@ -1,6 +1,5 @@
 package de.deyovi.chat.web;
 
-import java.io.File;
 import java.util.Set;
 
 import javax.servlet.ServletContainerInitializer;
@@ -8,9 +7,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.ServletException;
-
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.PropertyConfigurator;
 
 import de.deyovi.chat.core.utils.ChatConfiguration;
 

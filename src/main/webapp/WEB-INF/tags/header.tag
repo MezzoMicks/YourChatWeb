@@ -1,9 +1,10 @@
 <%@ tag language="java" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <header id="header">
 	<nav class="top-bar">
 		<ul class="title-area">
 			<li>
-				<a class="general offcanvas-button" style="font-size: 18px; color: white; float: left; padding: 4px;" href="#sidebar"><i class="icon-tasks"></i><span></span></a>
+				<a class="general offcanvas-button" style="font-size: 18px; color: #111; float: left; padding: 4px;" href="#sidebar"><i class="icon-tasks"></i><span></span></a>
 			</li>
 			<!-- Title Area -->
 			<li class="name">
@@ -27,7 +28,11 @@
 				<li><a href="#" data-reveal-id="mailInboxDialog"><i class="icon-envelope"></i>&nbsp;Mail</a></li>
 				<li><a href="#" id="awayAction"><i class="icon-minus-sign"></i>&nbsp;Away</a></li>
 				<li><a href="#" data-reveal-id="settingsDialog"><i class="icon-wrench"></i>&nbsp;Settings</a></li>
-				<li><a href="<c:out value="${requestScope.urlPrefix}logout"/>?action=logout&key=<c:out value="${sessionScope.logoutKey}"/>"><i class="icon-power-off"></i>&nbsp;Logout</a></li>
+				<c:url value="/logout" var="logoutUrl">
+					<c:param name="action" value="logout"/>
+					<c:param name="key" value="${sessionScope.logoutKey}"/>
+				</c:url>
+				<li><a href="${logoutUrl}"><i class="icon-power-off"></i>&nbsp;Logout</a></li>
 			</ul>
 		</section>
 	</nav>

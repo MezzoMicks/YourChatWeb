@@ -1,41 +1,58 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<web-app xmlns="http://java.sun.com/xml/ns/javaee"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
-      version="3.0">
-      
-	<display-name>YourChat-WebApp</display-name>
-	<listener>
-		<listener-class>de.deyovi.chat.web.ChatContext</listener-class>
-	</listener>
-	<servlet>
-		<servlet-name>ChatRequestDispatcher</servlet-name>
-		<servlet-class>de.deyovi.chat.web.ChatRequestDispatcher</servlet-class>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-    <servlet>
-		<servlet-name>ChatSocket</servlet-name>
-		<servlet-class>de.deyovi.chat.web.ChatSocket</servlet-class>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-    <servlet>
-        <servlet-name>jsp</servlet-name>
-        <servlet-class>org.apache.jasper.servlet.JspServlet</servlet-class>
-        <init-param>
-            <param-name>development</param-name>
-            <param-value>true</param-value>
-        </init-param>
-    </servlet>
-	<servlet-mapping>
-		<servlet-name>ChatRequestDispatcher</servlet-name>
-		<url-pattern></url-pattern>
-		<url-pattern>/app/*</url-pattern>
-		<url-pattern>/data/*</url-pattern>
-		<url-pattern>/content/*</url-pattern>
-		<url-pattern>/setup/*</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>ChatSocket</servlet-name>
-		<url-pattern>/socket/*</url-pattern>
-	</servlet-mapping>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0">
+  <display-name>YourChat-WebApp</display-name>
+  <listener>
+    <listener-class>de.deyovi.chat.web.ChatContext</listener-class>
+  </listener>
+  <servlet>
+    <servlet-name>ChatRequestDispatcher</servlet-name>
+    <servlet-class>de.deyovi.chat.web.ChatRequestDispatcher</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet>
+    <servlet-name>ChatSocket</servlet-name>
+    <servlet-class>de.deyovi.chat.web.ChatSocket</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet>
+    <servlet-name>jsp</servlet-name>
+    <servlet-class>org.apache.jasper.servlet.JspServlet</servlet-class>
+    <init-param>
+      <param-name>development</param-name>
+      <param-value>true</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ChatRequestDispatcher</servlet-name>
+    <url-pattern></url-pattern>
+    <url-pattern>/r/*</url-pattern>
+    <url-pattern>/d/*</url-pattern>
+    <url-pattern>/u/*</url-pattern>
+    <url-pattern>/id/*</url-pattern>
+    <url-pattern>/id-edit/*</url-pattern>
+    <url-pattern>/talk/*</url-pattern>
+    <url-pattern>/refresh/*</url-pattern>
+    <url-pattern>/listen/*</url-pattern>
+    <url-pattern>/login/*</url-pattern>
+    <url-pattern>/logout/*</url-pattern>
+    <url-pattern>/register/*</url-pattern>
+    <url-pattern>/sugar/*</url-pattern>
+    <url-pattern>/data/*</url-pattern>
+    <url-pattern>/content/*</url-pattern>
+    <url-pattern>/setup/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>ChatSocket</servlet-name>
+    <url-pattern>/socket/*</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>Faces Servlet</servlet-name>
+    <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Faces Servlet</servlet-name>
+    <url-pattern>/faces/*</url-pattern>
+  </servlet-mapping>
 </web-app>

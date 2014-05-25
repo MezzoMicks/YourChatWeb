@@ -3,13 +3,13 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ attribute name="additionalScripts" description="Scripts to be included in head" required="false" type="java.lang.String" %>
-<fmt:bundle basename="de.deyovi.chat.web.messages" />
+
 <!DOCTYPE html>
 <!--[if IE 8]>
 <html class="no-js lt-ie9" lang="en" >
 <![endif]-->
 <!--[if gt IE 8]><!-->
-<html class="no-js" lang="en">
+<html class="no-js theme-dark" lang="en">
 <!--<![endif]-->
 	<head>
 		<meta charset="utf-8" />
@@ -23,7 +23,7 @@
 		<t:link rel="stylesheet" href="/css/fixes.css" type="text/css" />
 		<!--<![endif] -->
 		<script>
-			listenID = "<c:out value="${sessionScope.user.listenId}"/>";
+			listenID = "<c:out value="${user.listenId}"/>";
 		</script>
 		<t:script src="/js/vendor/custom.modernizr.js" />
 		<t:script src="/js/vendor/jquery.js"/>
@@ -47,9 +47,8 @@
 		</c:if>
 	</head>
 	<body>
-		<section id="alerts">
-			
-		</section>
+		<t:alert />
 		<jsp:doBody />
+		
 	</body>
 </html>

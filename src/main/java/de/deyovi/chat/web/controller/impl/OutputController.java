@@ -6,6 +6,10 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.ejb.EJB;
+import javax.ejb.Singleton;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -26,18 +30,21 @@ import de.deyovi.chat.web.controller.ControllerStatusOutput;
 import de.deyovi.chat.web.controller.Mapping;
 import de.deyovi.chat.web.controller.Mapping.MatchedMapping;
 
+@Singleton
+@de.deyovi.chat.web.controller.annotations.Controller
 public class OutputController implements Controller {
 
 	private static final Logger logger = LogManager.getLogger(OutputController.class);
-	
+
 	private static final Mapping PATH_LISTEN = new DefaultMapping("listen");
 	private static final Mapping PATH_REFRESH = new DefaultMapping("refresh");
 	private static final Mapping[] PATHES = new Mapping[] { PATH_LISTEN, PATH_REFRESH };
 	private final static int ALIVE_CYCLES = 100;
 	private static Map<String, Integer> senslessCycleMap = new ConcurrentHashMap<String, Integer>();
-    
-	private final OutputFacade facade = DefaultOutputFacade.getInstance();
-	
+
+    @Inject
+	private OutputFacade facade;
+
 	private enum OutputType {
 
 		SYNC("sync"), ASYNC("async"), REGISTER("register");
@@ -60,7 +67,7 @@ public class OutputController implements Controller {
 			return SYNC;
 		}
 	}
-	
+
 	@Override
 	public Mapping[] getMappings() {
 		return PATHES;
@@ -87,43 +94,36 @@ public class OutputController implements Controller {
 		ControllerOutput result = null;
 		OutputType type = OutputType.getById(request.getParameter("output"));
 		logger.debug(request.getRemoteAddr() + " does " + type);
-		if (user != null) {
-			try {
-				final String listenid = request.getParameter("listenid");
-				logger.debug(user + 	" starts to listen with id " + listenid);
-				String htmlString = request.getParameter("html");
-				boolean html = htmlString == null || Boolean.parseBoolean(htmlString);
-				if (type == OutputType.ASYNC) {
-					StringBuilder writer = new StringBuilder();
-					OutputMeta meta = facade.listen(new HTMLMessageConsumer(writer), locale, user, listenid);
-					if (html) {
-						if (writer.length() == 0) {
-							Integer senselessCycles = senslessCycleMap.get(listenid);
-							if (senselessCycles == null) {
-								senselessCycles = 0;
-							}
-							if (++senselessCycles % ALIVE_CYCLES == 0) {
-								senselessCycles = 0;
-								writeDummy(writer, 16);
-							}
-							senslessCycleMap.put(listenid, senselessCycles);
+		try {
+			final String listenid = request.getParameter("listenid");
+			logger.debug(user + 	" starts to listen with id " + listenid);
+			String htmlString = request.getParameter("html");
+			boolean html = htmlString == null || Boolean.parseBoolean(htmlString);
+			if (type == OutputType.ASYNC) {
+				StringBuilder writer = new StringBuilder();
+				OutputMeta meta = facade.listen(new HTMLMessageConsumer(writer), locale, user, listenid);
+				if (html) {
+					if (writer.length() == 0) {
+						Integer senselessCycles = senslessCycleMap.get(listenid);
+						if (senselessCycles == null) {
+							senselessCycles = 0;
 						}
-						result = new ControllerHTMLOutput(writer.toString());
-					} else if (meta.isInterrupted()) {
-						result = new ControllerStatusOutput(307);
+						if (++senselessCycles % ALIVE_CYCLES == 0) {
+							senselessCycles = 0;
+							writeDummy(writer, 16);
+						}
+						senslessCycleMap.put(listenid, senselessCycles);
 					}
-				} else if (type == OutputType.REGISTER) {
-					logger.info(user + 	" registers to Listen");
-					user.setListenerTime(System.currentTimeMillis());
-					user.alive();
-					user.getCurrentRoom().join(user);
-					result = new ControllerJSONOutput(new JSONObject().put("listenId", user.getListenId()));
+					result = new ControllerHTMLOutput(writer.toString());
+				} else if (meta.isInterrupted()) {
+					result = new ControllerStatusOutput(307);
 				}
-			} catch (Exception ex) {
-				logger.error(ex);
+			} else if (type == OutputType.REGISTER) {
+                String listenId = facade.register(user);
+				result = new ControllerJSONOutput(new JSONObject().put("listenId", listenId));
 			}
-		} else {
-			result = new ControllerHTMLOutput("No User!");
+		} catch (Exception ex) {
+			logger.error(ex);
 		}
 		return result;
 	}
@@ -136,5 +136,5 @@ public class OutputController implements Controller {
 		}
 		appender.append("-->");
 	}
-	
+
 }

@@ -1,4 +1,7 @@
-
+/*
+ * http://colorschemedesigner.com/#3Z11T4Y7Tw0w0
+ * 
+ */
 $primary-color: #0E0E29;
 $secondary-color: #738B9D;
 html, body {
@@ -54,7 +57,7 @@ textarea {
 
 #sidebar {
 	background: $body-bg; 
-	color: white;
+	color: #ffffff;
 	border-right: 2px solid white;
 }
 
@@ -80,11 +83,11 @@ textarea {
 	}
 }
 
-#profile-avatar {
+#avatar {
 	position: relative;
-	img {
-		height: 240px;
-		width: 240px;
+	.avatar-image {
+		max-height: 240px;
+		max-width: 240px;
 	}
 }
 
@@ -105,26 +108,34 @@ textarea {
 	width:0;
 }
 
+.dark-theme {
+  .font-primary {
+    color: #ffffff;
+  }
+
+
+}
+
 table.mail {
-	width: 100%;
-	table-layout:fixed;
-	
-	tr td {
-		white-space: nowrap;
-		overflow: hidden;
-		text-overflow: ellipsis;
-	}
-	
-	tr.unread td {
-		font-weight: bold;
-	}
-	
-	tr td.date {
-		width: 10em;
-	}
-	
-	tr td.delete {
-		width: 2em;
-	}
-	
+  width: 100%;
+  table-layout:fixed;
+
+  tr td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  tr.unread td {
+    font-weight: bold;
+  }
+
+  tr td.date {
+    width: 10em;
+  }
+
+  tr td.delete {
+    width: 2em;
+  }
+
 }

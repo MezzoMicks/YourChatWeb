@@ -361,11 +361,11 @@ function doSaveProfile(field, value, callback) {
  * message (actual message to display)
  * @param alerts
  */
-function displayAlerts(alerts) {
+function showAlerts(alerts) {
 	var $alertContainer = $('#alerts');
 	for(var i = 0; i < alerts.length; i++) {
 	    var alert = alerts[i];
-	    var $alert = $('<div class="alertBox" data-alert>');
+	    var $alert = $('<div class="alert-box" data-alert>');
 	    if (alert.level == 'INFO') {
 	    	$alert.addClass('success');
 	    } else if (alert.level == 'ERROR') {

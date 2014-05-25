@@ -1,29 +1,31 @@
 package de.deyovi.chat.web.controller.impl;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import javax.ejb.EJB;
+import javax.ejb.Singleton;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import de.deyovi.chat.web.controller.*;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import de.deyovi.aide.Outcome;
+import de.deyovi.chat.core.objects.Alert;
 import de.deyovi.chat.core.objects.ChatUser;
 import de.deyovi.chat.core.utils.ChatConfiguration;
 import de.deyovi.chat.facades.SessionFacade;
-import de.deyovi.chat.facades.SetupFacade;
 import de.deyovi.chat.facades.impl.DefaultSessionFacade;
-import de.deyovi.chat.facades.impl.DefaultSetupFacade;
 import de.deyovi.chat.web.SessionParameters;
-import de.deyovi.chat.web.controller.ControllerJSONOutput;
-import de.deyovi.chat.web.controller.ControllerOutput;
-import de.deyovi.chat.web.controller.ControllerRedirectOutput;
-import de.deyovi.chat.web.controller.ControllerViewOutput;
-import de.deyovi.chat.web.controller.Mapping;
 import de.deyovi.chat.web.controller.Mapping.MatchedMapping;
 
 /**
@@ -31,6 +33,7 @@ import de.deyovi.chat.web.controller.Mapping.MatchedMapping;
  * @author Michi
  *
  */
+@Singleton
 public class SessionController extends AbstractFormController {
 
 	private static final Logger logger = LogManager.getLogger(SessionController.class);
@@ -41,7 +44,8 @@ public class SessionController extends AbstractFormController {
 	private static final Mapping PATH_SUGAR = new DefaultMapping("sugar");
 	private static final Mapping[] PATHES = new Mapping[] { PATH_CHAT, PATH_LOGIN, PATH_LOGOUT, PATH_REGISTER, PATH_SUGAR };
 
-	private final SessionFacade sessionFacade = DefaultSessionFacade.getInstance();
+    @Inject
+	private SessionFacade sessionFacade;
 	
 	@Override	
 	public Mapping[] getMappings() {
@@ -96,8 +100,16 @@ public class SessionController extends AbstractFormController {
 			String password = request.getParameter("passwordHash");
 			String inviteKey = request.getParameter("keyHash");
 			String sugar = (String) session.getAttribute(SessionParameters.SUGAR);
-			ChatUser newUser = sessionFacade.register(username, password, inviteKey, sugar);
-			return forwardUser(session, newUser);
+			Outcome<ChatUser> register = sessionFacade.register(username, password, inviteKey, sugar);
+			ChatUser newUser = register.getResult();
+			if (newUser != null) {
+				session.setAttribute(SessionParameters.USER, newUser);
+				session.setAttribute(SessionParameters.LOGOUT_KEY, newUser.getListenId());
+				session.setMaxInactiveInterval(-1);
+				return new ControllerRedirectOutput("/");
+			} else {
+				return new ControllerViewOutput("login", Collections.singletonMap("alerts", register.getNotices()));
+			}
 		} else {
 			logger.error("Register without session!");
 			return new ControllerViewOutput("login", null);
@@ -110,15 +122,15 @@ public class SessionController extends AbstractFormController {
 			String username = request.getParameter("username");
 			String password = request.getParameter("passwordHash");
 			String sugar = (String) session.getAttribute(SessionParameters.SUGAR);
-			ChatUser newUser = sessionFacade.login(username, password, sugar);
+			Outcome<ChatUser> result = sessionFacade.login(username, password, sugar);
+			ChatUser newUser = result.getResult();
 			if (newUser != null) {
 				session.setAttribute(SessionParameters.USER, newUser);
 				session.setAttribute(SessionParameters.LOGOUT_KEY, newUser.getListenId());
 				session.setMaxInactiveInterval(-1);
 				return new ControllerRedirectOutput("/");
 			} else {
-				session.invalidate();
-				return new ControllerViewOutput("login", null);
+				return new ControllerViewOutput("login", Collections.singletonMap("alerts", result.getNotices()));
 			}
 		} else {
 			logger.error("Login without session!");
@@ -157,6 +169,18 @@ public class SessionController extends AbstractFormController {
 			logger.warn("Sugarrequest without Session from User " + session.getAttribute(SessionParameters.USER));
 			return null;
 		}
+	}
+	
+	private void addAlert(Alert alert, HttpServletRequest request) {
+		List<Alert> nonUserAlerts = null;
+		HttpSession session;
+		if ((session = request.getSession(false)) != null) {
+			nonUserAlerts = (List<Alert>) session.getAttribute("alerts");
+		}
+		if (nonUserAlerts == null) {
+//			nonUserAlerts = request.getAttribute(")
+		}
+		
 	}
 	
 }

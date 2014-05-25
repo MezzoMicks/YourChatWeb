@@ -24,11 +24,7 @@
 		<script type="text/javascript">
 			var keyRequired = ${invitationRequired};
 			
-			function loginKey(event) {
-				if (event.which == 13) {
-					login();
-				}
-			}
+		
 			
 			function login() {
 				var $form = $('#loginForm');
@@ -37,6 +33,7 @@
 				$form.find('input[name="password"]').val('');
 				var username = $form.find('input[name="username"]').val();
 				var sugar = getSugar(username);
+				console.log('retrieved sugar : ' + sugar);
 				if (sugar != null && sugar != "") {
 					$form.find('input[name="passwordHash"]').val(sha256_digest(sugar + password));
 				} else {
@@ -46,25 +43,26 @@
 			}
 			
 			function register() {
-				if ($('#registerTab').hasClass('active')) {
-					var form = $('#registerForm');
-					var username = $.trim(form.find('input[name="username"]').val());
-					var password = $.trim(form.find('input[name="password"]').val());
-					var password2 = $.trim(form.find('input[name="passwordRepeat"]').val());
-					if (password == '') {
-						return false;
-					} else	if (password != password2) {
-						$("#registerLabel").html("Supplied passwords differ!");
-						return false;
-					} else {
-						var sugar = getSugar(username);
-						if (keyRequired) {
-							var key = form.find('input[name="key"]').val();
-							form.find('input[name="keyHash"]').val(sha256_digest(sugar + key));
-						}
-						form.find('input[name="passwordHash"]').val(sha256_digest(password));
-						return true;
+				var $form = $('#registerForm');
+				var username = $.trim($form.find('input[name="username"]').val());
+				var password = $.trim($form.find('input[name="password"]').val());
+				$form.find('input[name="password"]').val('');
+				var password2 = $.trim($form.find('input[name="passwordRepeat"]').val());
+				$form.find('input[name="passwordRepeat"]').val('');
+				if (password == '') {
+					return false;
+				} else	if (password != password2) {
+					$("#registerLabel").html("Supplied passwords differ!");
+					return false;
+				} else {
+					var sugar = getSugar(username);
+					console.log("got sugar:" + sugar);
+					if (keyRequired) {
+						var key = $form.find('input[name="key"]').val();
+						$form.find('input[name="keyHash"]').val(sha256_digest(sugar + key));
 					}
+					$form.find('input[name="passwordHash"]').val(sha256_digest(password));
+					return true;
 				}
 			}
 			
@@ -75,6 +73,7 @@
 					$('#registerForm').html("<strong>Registration not possible!</strong>");
 				}
 				$('#loginForm').submit(login);
+				$('#registerForm').submit(register);
 			});
 		</script>
 	</jsp:attribute>
@@ -86,18 +85,18 @@
 	  </div>
 	  <hr />
 	  <div class="row">
-	    <div class="large-centered large-6 columns">
+	    <div class="large-centered large-4 columns">
 	    <div class="section-container auto" data-section data-options="one_up: true; deep_linking: true">
 			<section>
 				<p class="title" data-section-title>
 					<a href="#login"><i class="icon-group"></i>&nbsp;${msgLogin}</a>
 				</p>
 				<div class="content" data-slug="login" data-section-content>
-					<c:url value="${requestScope.urlPrefix}login" var="loginURL"/>
+					<c:url value="/login" var="loginURL"/>
 					<form id="loginForm" class="custom" action="${loginURL}" method="POST">
 						<input type="text" name="username" placeholder="${msgUsername}">
 						<br /> 
-						<input type="password" name="password" placeholder="${msgPassword}" onkeydown="loginKey(event)"> 
+						<input type="password" name="password" placeholder="${msgPassword}"> 
 						<input type="hidden" name="passwordHash" /> 
 						<input type="hidden" name="action" value="login" />
 						<input type="submit" class="button" value="${msgSend}"/>
@@ -109,16 +108,16 @@
 					<a href="#register"><i class="icon-picture"></i>&nbsp;${msgRegister}</a>
 				</p>
 			<div class="content" data-slug="register" data-section-content>
-				<c:url value="${requestScope.urlPrefix}register" var="registerURL"/>
-				<form id="registerForm" class="custom" action="<c:url value="registerURL"/>" method="POST">
+				<c:url value="/register" var="registerURL"/>
+				<form id="registerForm" class="custom" action="${registerURL}" method="POST">
 					<input type="text" name="username" placeholder="${msgUsername}">
 					<br /> 
 					<input type="password" name="password" placeholder="${msgPassword}">
 					<br /> 
 					<input type="password" name="passwordRepeat" placeholder="${msgPasswordAgain}">
 					<input type="hidden" name="passwordHash" /> 
-					<br />
 					<c:if test="${requestScope.keyRequired}">
+						<br />
 						<input type="text" name="key" placeholder="${msgInviteKey}">
 						<input type="hidden" name="keyHash" /> 
 					</c:if>

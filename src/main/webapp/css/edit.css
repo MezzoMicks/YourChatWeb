@@ -1,0 +1,45 @@
+/* line 1, ../sass/edit.scss */
+.editor-wrapper {
+  position: relative;
+}
+
+/* line 4, ../sass/edit.scss */
+.editor-img {
+  position: absolute;
+  background: rgba(30, 30, 30, 0.3);
+  height: 20px;
+}
+/* line 9, ../sass/edit.scss */
+.editor-img > .editor-input {
+  visibility: hidden;
+  height: 0;
+  line-height: 0;
+  font-size: 0;
+  margin: 0;
+  width: 0;
+  display: inline-block;
+}
+/* line 19, ../sass/edit.scss */
+.editor-img > .editor-action {
+  color: #ffffff;
+  margin-top: 2px;
+  margin-right: 2px;
+  margin-left: 2px;
+  display: inline-block;
+}
+/* line 27, ../sass/edit.scss */
+.editor-img > .editor-reset {
+  display: none;
+}
+/* line 30, ../sass/edit.scss */
+.editor-img > .editor-submit {
+  display: none;
+}
+/* line 35, ../sass/edit.scss */
+.editor-img.editor-data-available > .editor-reset {
+  display: inline-block;
+}
+/* line 38, ../sass/edit.scss */
+.editor-img.editor-data-available > .editor-submit {
+  display: inline-block;
+}

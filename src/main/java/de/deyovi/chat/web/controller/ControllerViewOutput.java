@@ -5,9 +5,9 @@ import java.util.Map;
 public class ControllerViewOutput implements ControllerOutput {
 
 	private final String targetJSP;
-	private final Map<String, Object> parameters;
+	private final Map<String, ? extends Object> parameters;
 	
-	public ControllerViewOutput(String targetJSP, Map<String, Object> parameters) {
+	public ControllerViewOutput(String targetJSP, Map<String, ? extends Object> parameters) {
 		this.targetJSP = targetJSP;
 		this.parameters = parameters;
 	}
@@ -36,7 +36,7 @@ public class ControllerViewOutput implements ControllerOutput {
 		return "/WEB-INF/jsp/" + targetJSP + ".jsp";
 	}
 
-	public Map<String, Object> getParameters() {
+	public Map<String, ? extends Object> getParameters() {
 		return parameters;
 	}
 	

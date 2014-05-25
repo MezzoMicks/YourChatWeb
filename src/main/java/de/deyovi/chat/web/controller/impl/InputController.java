@@ -3,21 +3,18 @@ package de.deyovi.chat.web.controller.impl;
 import java.io.InputStream;
 import java.util.Map;
 
+import javax.ejb.Singleton;
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import de.deyovi.chat.core.services.CommandInterpreter;
-import de.deyovi.chat.core.services.impl.DefaultCommandInterpreter;
-import de.deyovi.chat.facades.InputFacade;
-import de.deyovi.chat.facades.impl.DefaultInputFacade;
+import de.deyovi.chat.web.controller.annotations.Controller;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import de.deyovi.chat.core.objects.ChatUser;
-import de.deyovi.chat.core.objects.Segment;
-import de.deyovi.chat.core.services.InputProcessorService;
-import de.deyovi.chat.core.services.impl.DefaultInputProcessorService;
+import de.deyovi.chat.facades.InputFacade;
 import de.deyovi.chat.web.controller.ControllerOutput;
 import de.deyovi.chat.web.controller.ControllerStatusOutput;
 import de.deyovi.chat.web.controller.Mapping;
@@ -28,6 +25,8 @@ import de.deyovi.chat.web.controller.Mapping.MatchedMapping;
  * @author Michi
  *
  */
+@Singleton
+@Controller
 public class InputController extends AbstractFormController {
 
 	private static final Logger logger = LogManager.getLogger(InputController.class);
@@ -40,8 +39,8 @@ public class InputController extends AbstractFormController {
 	private static final String PARAM_MESSAGE = "message";
 	private static final String PARAM_TALK_FILE = "talkfile";
 
-	private final InputProcessorService inputService = DefaultInputProcessorService.getInstance();
-    private final InputFacade inputFacade = DefaultInputFacade.getInstance();
+    @Inject
+    private InputFacade inputFacade;
 	
 	@Override	
 	public Mapping[] getMappings() {
@@ -55,11 +54,11 @@ public class InputController extends AbstractFormController {
 			talk(user, request);
 			return new ControllerStatusOutput(200);
 		} else if (path == PATH_AWAY) {
-			new DefaultCommandInterpreter(inputService).away(user, !user.isAway());
+            inputFacade.away(user, !user.isAway());
 			return new ControllerStatusOutput(200);
 		} else if (path == PATH_JOIN) {
 			Map<String, Object> parameters = getParameters(request);
-            new DefaultCommandInterpreter(inputService).join(user, (String) parameters.get(PARAM_ROOM));
+            inputFacade.join(user, (String) parameters.get(PARAM_ROOM));
 			return new ControllerStatusOutput(200);
 		} else {
 			return null;

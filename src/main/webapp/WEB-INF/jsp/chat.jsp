@@ -2,7 +2,13 @@
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-
+<%-- Localization first --%>
+<fmt:bundle basename="de.deyovi.chat.web.messages" prefix="front.">
+	<fmt:message key="label.media" var="msgMedia"/>
+	<fmt:message key="label.users" var="msgUsers"/>
+	<fmt:message key="label.background" var="msgBackground"/>
+	<fmt:message key="label.autoscroll" var="msgAutoscroll"/>
+</fmt:bundle>
 <t:master>
 	<jsp:attribute name="additionalScripts">
 		<script src="js/frontend.js"></script>
@@ -16,7 +22,8 @@
 				</div>
 			</div>
 			<div id="chat-input" class="large-12 columns">
-				<form id="talkForm" class="custom" action="app/talk" method="post">
+				<c:url value="/talk" var="talkURL"/>
+				<form id="talkForm" class="custom" action="${talkURL}" method="post">
 					<div class="row">
 						<div class="small-12 large-9 columns left">
 							<input id="talkText" type="text" name="message">
@@ -26,12 +33,12 @@
 					<div class="row">
 						<div class="small-5 large-3 columns left">
 							<label for="autoscroll">
-							    <input type="checkbox" id="autoscroll"/>&nbsp;<fmt:message key="front.autoscroll" />
+							    <input type="checkbox" id="autoscroll" checked="checked"/>&nbsp;${msgAutoscroll}
 							</label>
 						</div>
 						<div class="small-5 large-3 columns left">
 							<label for="showBackground">
-							    <input type="checkbox" id="showBackground"/>&nbsp;<fmt:message key="front.background"/>
+							    <input type="checkbox" id="showBackground" checked="checked"/>&nbsp;${msgBackground}
 							</label>
 						</div>
 						<div class="small-2 large-3 columns right">
@@ -48,7 +55,7 @@
 				<div class="section-container auto" data-section data-options="one_up: false; deep_linking: true">
 				<section>
 					<p class="title" data-section-title>
-						<a href="#users"><i class="icon-group"></i>&nbsp;<fmt:message key="front.users"/></a>
+						<a href="#users"><i class="icon-group"></i>&nbsp;${msgUsers}</a>
 					</p>
 					<div id="userList" class="content" data-slug="users" data-section-content>
 						<ul id="roomMateList"></ul>
@@ -57,7 +64,7 @@
 				</section>
 				<section>
 					<p class="title" data-section-title>
-						<a href="#media"><i class="icon-picture"></i>&nbsp;<fmt:message key="front.media"/></a>
+						<a href="#media"><i class="icon-picture"></i>&nbsp;${msgMedia}</a>
 					</p>
 					<div class="content" data-slug="media" data-section-content>
 						<ul id="mediaList"></ul>

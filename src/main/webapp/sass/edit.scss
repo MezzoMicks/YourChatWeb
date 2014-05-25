@@ -1,0 +1,43 @@
+.editor-wrapper {
+  position: relative;
+}
+.editor-img {
+  position: absolute;
+  background: rgba(30,30,30,0.3);
+  height: 20px;
+
+  >.editor-input {
+    visibility: hidden;
+    height: 0;
+    line-height: 0;
+    font-size: 0;
+    margin: 0;
+    width: 0;
+    display: inline-block;
+  }
+
+  >.editor-action {
+    color: #ffffff;
+    margin-top: 2px;
+    margin-right: 2px;
+    margin-left: 2px;
+    display: inline-block;
+  }
+
+  >.editor-reset {
+    display: none;
+  }
+  >.editor-submit {
+    display: none;
+  }
+
+  &.editor-data-available {
+    >.editor-reset {
+      display: inline-block;
+    }
+    >.editor-submit {
+      display: inline-block;
+    }
+  }
+
+}

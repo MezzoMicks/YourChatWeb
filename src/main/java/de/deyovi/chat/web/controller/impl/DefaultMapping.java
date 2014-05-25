@@ -11,18 +11,39 @@ public class DefaultMapping implements Mapping, Comparable<Mapping> {
 	private final static Logger logger = LogManager.getLogger(DefaultMapping.class);
 	
 	private final String pathAsString;
+	private final String[] aliases;
 	private final Method[] methods;
 
-	public DefaultMapping(String pathAsString, Method... methods) {
+	public DefaultMapping(String pathAsString, String[] aliases, Method... methods) {
 		this.methods = methods;
+		String[] tmpAliases;
+		if (aliases == null) {
+			tmpAliases = new String[1];
+		} else {
+			tmpAliases = new String[1 + aliases.length];
+			int i = 1;
+			for (String alias : aliases) {
+				tmpAliases[i++] = alias == null ? "" : alias.trim();;
+			}
+		}
 		this.pathAsString = pathAsString == null ? "" : pathAsString.trim();
+		tmpAliases[0] = this.pathAsString;
+		this.aliases = tmpAliases;
 	}
-
+	
+	public DefaultMapping(String pathAsString, Method... methods) {
+		this(pathAsString, null, methods);
+	}
+	
 	public int compareTo(Mapping o) {
 		if (o == null) {
 			return 1;
 		} else {
-			return pathAsString.compareTo(o.getPathAsString());
+			int result = Integer.compare(pathAsString.length(), o.getPathAsString().length());
+			if (result == 0) {
+				result = pathAsString.compareTo(o.getPathAsString());
+			}
+			return result;
 		}
 	}
 
@@ -48,8 +69,11 @@ public class DefaultMapping implements Mapping, Comparable<Mapping> {
 			if (methodMatch) {
 				// Does the path match?
 				logger.debug("matching " + pathAsString + " against " + requestPath);
-				if (requestPath.startsWith(pathAsString)) {
-					result = new DefaultMatchedMapping(requestPath, reqMethod);
+				for (String alias : getAliases()) {
+					if (requestPath.startsWith(alias)) {
+						result = new DefaultMatchedMapping(alias, requestPath, reqMethod);
+						break;
+					}
 				}
 			}
 		}
@@ -61,6 +85,11 @@ public class DefaultMapping implements Mapping, Comparable<Mapping> {
 		return pathAsString;
 	}
 
+	@Override
+	public String[] getAliases() {
+		return aliases;
+	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == null) {
@@ -91,8 +120,8 @@ public class DefaultMapping implements Mapping, Comparable<Mapping> {
 		private final String payload;
 		private final Method method;
 
-		private DefaultMatchedMapping(String path, Method method) {
-			this.payload = path.substring(pathAsString.length());
+		private DefaultMatchedMapping(String matchedAlias, String path, Method method) {
+			this.payload = path.substring(matchedAlias.length());
 			this.method = method;
 		}
 

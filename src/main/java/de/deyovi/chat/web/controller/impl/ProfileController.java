@@ -2,12 +2,21 @@ package de.deyovi.chat.web.controller.impl;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
+import javax.ejb.Singleton;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import de.deyovi.chat.core.services.ChatUserService;
+import de.deyovi.chat.core.services.impl.DefaultChatUserService;
+import de.deyovi.chat.web.controller.*;
+import de.deyovi.chat.web.controller.annotations.Controller;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.json.JSONException;
@@ -16,22 +25,20 @@ import org.json.JSONObject;
 import de.deyovi.chat.core.objects.ChatUser;
 import de.deyovi.chat.core.objects.Profile;
 import de.deyovi.chat.core.services.ProfileService;
-import de.deyovi.chat.core.services.impl.DefaultProfileService;
-import de.deyovi.chat.web.controller.ControllerHTMLOutput;
-import de.deyovi.chat.web.controller.ControllerJSONOutput;
-import de.deyovi.chat.web.controller.ControllerOutput;
-import de.deyovi.chat.web.controller.Mapping;
 import de.deyovi.chat.web.controller.Mapping.MatchedMapping;
 
+@Singleton
+@Controller
 public class ProfileController extends AbstractFormController {
 
-
 	private static final Logger logger = LogManager.getLogger(ProfileController.class);
-	private static final Mapping PATH_DELETE = new DefaultMapping("delete");
-	private static final Mapping PATH_CHANGE = new DefaultMapping("change");
-	private static final Mapping PATH_ADDIMAGE = new DefaultMapping("addimage");
-	private static final Mapping PATH_SETAVATAR = new DefaultMapping("addavatar");
-	private static final Mapping[] PATHES = new Mapping[] { PATH_DELETE, PATH_CHANGE, PATH_ADDIMAGE, PATH_SETAVATAR };
+	private static final Mapping PATH_ID = new DefaultMapping("id");
+	private static final Mapping PATH_ID_EDIT = new DefaultMapping("id-edit");
+	private static final Mapping PATH_DELETE = new DefaultMapping("id-edit/delete");
+	private static final Mapping PATH_CHANGE = new DefaultMapping("id-edit/change");
+	private static final Mapping PATH_ADDIMAGE = new DefaultMapping("id-edit/addimage");
+	private static final Mapping PATH_SETAVATAR = new DefaultMapping("id-edit/addavatar");
+	private static final Mapping[] PATHES = new Mapping[] { PATH_ID, PATH_ID_EDIT, PATH_DELETE, PATH_CHANGE, PATH_ADDIMAGE, PATH_SETAVATAR };
 	
 	private static final String PARAM_IMAGE = "image";
 	private static final String PARAM_IMAGE_TITLE = "imageTitle";
@@ -44,8 +51,11 @@ public class ProfileController extends AbstractFormController {
 	private static final String FIELD_BIRTHDAY = "birthday";
 	
 	private static final String DATE_PATTERN = "yyyy-MM-dd";
-	
-	private final ProfileService profileService = DefaultProfileService.getInstance();
+
+    @Inject
+	private Instance<ProfileService> profileServiceInstance;
+    @Inject
+    private Instance<ChatUserService> chatUserServiceInstance;
 	
 	public Mapping[] getMappings() {
 		return PATHES;
@@ -60,15 +70,35 @@ public class ProfileController extends AbstractFormController {
 			change(user, request);
 			return new ControllerHTMLOutput(null);
 		} else if (path == PATH_ADDIMAGE) {
-			return new ControllerJSONOutput(addImage(user, request));
+			return new ControllerJSONOutput(addImage(user, request, response));
 		} else if (path == PATH_SETAVATAR) {
-			return new ControllerJSONOutput(setAvatar(user, request));
-		} else {
+			return new ControllerJSONOutput(setAvatar(user, request, response));
+		} else if (path == PATH_ID) {
+            String userName = matchedPath.getPayload();
+            if (userName == null) {
+                userName = "";
+            } else {
+                userName.trim();
+            }
+            ChatUser profileUser;
+            ChatUserService chatUserService = chatUserServiceInstance.get();
+            if (!userName.isEmpty()) {
+                profileUser = chatUserService.getByName(userName);
+            } else {
+                profileUser = user;
+            }
+            return new ControllerViewOutput("profile", Collections.singletonMap("profileUser", profileUser));
+        } else if (path == PATH_ID_EDIT) {
+            Map<String, Object> parameters = new HashMap<String, Object>(2);
+            parameters.put("profileUser", user);
+            parameters.put("editMode", true);
+            return new ControllerViewOutput("profile", parameters);
+        } else {
 			return null;
 		}
 	}
-	
-	private JSONObject addImage(ChatUser user, HttpServletRequest request) {
+
+	private JSONObject addImage(ChatUser user, HttpServletRequest request, HttpServletResponse response) {
 		Map<String, Object> parameters = getParameters(request);
 		FileUpload image = (FileUpload) parameters.get(PARAM_IMAGE);
 		String title = (String) parameters.get(PARAM_IMAGE_TITLE);
@@ -76,9 +106,10 @@ public class ProfileController extends AbstractFormController {
 			if (logger.isDebugEnabled()) {
 				logger.debug(user + " adds image " + image.getFileName());
 			}
+            ProfileService profileService = profileServiceInstance.get();
 			Long newID = profileService.addGalleryImage(user, image.getFileName(), image.getStream(), title);
 			try {
-				return new JSONObject().put("id", newID);
+				return new JSONObject().put("id", newID).put("url", response.encodeURL(request.getContextPath() + "/d/db_" + newID + ".jpg"));
 			} catch (JSONException e) {
 				logger.error(e);
 				return null;
@@ -88,7 +119,7 @@ public class ProfileController extends AbstractFormController {
 		}
 	}
 
-	private JSONObject setAvatar(ChatUser user, HttpServletRequest request) {
+	private JSONObject setAvatar(ChatUser user, HttpServletRequest request, HttpServletResponse response) {
 		Map<String, Object> parameters = getParameters(request);
 		FileUpload image = (FileUpload) parameters.get(PARAM_IMAGE);
 		String title = (String) parameters.get(PARAM_IMAGE_TITLE);
@@ -96,9 +127,10 @@ public class ProfileController extends AbstractFormController {
 			if (logger.isDebugEnabled()) {
 				logger.debug(user + " sets avatar " + image.getFileName());
 			}
+            ProfileService profileService = profileServiceInstance.get();
 			Long newID = profileService.setAvatarImage(user, image.getFileName(), image.getStream(), title);
 			try {
-				return new JSONObject().put("id", newID);
+                return new JSONObject().put("id", newID).put("url", response.encodeURL(request.getContextPath() + "/d/db_" + newID + ".jpg"));
 			} catch (JSONException e) {
 				logger.error(e);
 				return null;
@@ -107,11 +139,12 @@ public class ProfileController extends AbstractFormController {
 			return null;
 		}
 	}
-	
-	
+
 	private void delete(ChatUser user, HttpServletRequest request) {
 		Map<String, Object> parameters = getParameters(request);
 		Long id = Long.parseLong((String) parameters.get(PARAM_IMAGE_ID));
+
+        ProfileService profileService = profileServiceInstance.get();
 		profileService.deleteImage(user, id);
 	}
 	

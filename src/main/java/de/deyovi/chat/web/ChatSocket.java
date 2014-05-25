@@ -9,6 +9,7 @@ import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.util.Locale;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.catalina.websocket.StreamInbound;
@@ -19,6 +20,7 @@ import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import de.deyovi.aide.Outcome;
 import de.deyovi.chat.core.objects.ChatUser;
 import de.deyovi.chat.core.objects.MessageEventListener;
 import de.deyovi.chat.core.services.impl.JSONMessageConsumer;
@@ -32,10 +34,13 @@ import de.deyovi.chat.facades.impl.DefaultSessionFacade;
 public class ChatSocket extends WebSocketServlet {
 
 	private final static Logger logger = Logger.getLogger(ChatSocket.class);
-	
-	private final SessionFacade sessionFacade = DefaultSessionFacade.getInstance();
-	private final OutputFacade outputFacade = DefaultOutputFacade.getInstance();
-    private final InputFacade inputFacade = DefaultInputFacade.getInstance();
+
+    @Inject
+	private SessionFacade sessionFacade;
+    @Inject
+	private OutputFacade outputFacade;
+    @Inject
+    private InputFacade inputFacade;
 	
 	@Override
 	protected StreamInbound createWebSocketInbound(String subProtocol, HttpServletRequest request) {
@@ -85,7 +90,8 @@ public class ChatSocket extends WebSocketServlet {
 					} else if ("login".equals(action)) {
 						String username = requestBody.getString("username");
 						String password = requestBody.getString("password");
-						user = sessionFacade.login(username, password, privateSugar);
+						Outcome<ChatUser> outcome = sessionFacade.login(username, password, privateSugar);
+						user = outcome.getResult();
 						if (user != null) {
 							result.put("success", true);
 							result.put("listenId", user.getListenId());
@@ -96,7 +102,8 @@ public class ChatSocket extends WebSocketServlet {
 						String username = requestBody.getString("username");
 						String password = requestBody.getString("password");
 						String inviteKey = requestBody.getString("inviteKey");
-						user = sessionFacade.register(username, password, inviteKey, privateSugar);
+						Outcome<ChatUser> outcome = sessionFacade.register(username, password, inviteKey, privateSugar);
+						user = outcome.getResult();
 						if (user != null) {
 							result.put("success", true);
 							result.put("listenId", user.getListenId());

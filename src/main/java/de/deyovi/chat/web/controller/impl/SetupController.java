@@ -3,6 +3,8 @@ package de.deyovi.chat.web.controller.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.ejb.Singleton;
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -23,7 +25,8 @@ import de.deyovi.chat.web.controller.annotations.Controller;
  * @author Michi
  *
  */
-@Controller(disabled = true)
+@Singleton
+@Controller(disabled = false)
 public class SetupController extends AbstractFormController {
 
 	private static final Logger logger = LogManager.getLogger(SetupController.class);
@@ -36,7 +39,8 @@ public class SetupController extends AbstractFormController {
 	private static final String PARAM_PASSWORD = "password";
 	private static final String ACTION_INITIIALIZE = "initialize";
 
-	private final SetupFacade setupFacade = DefaultSetupFacade.getInstance();
+    @Inject
+	private SetupFacade setupFacade;
 	
 	private String currentToken = null;
 	
