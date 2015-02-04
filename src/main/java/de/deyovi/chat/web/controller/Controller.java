@@ -1,10 +1,10 @@
 package de.deyovi.chat.web.controller;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import de.deyovi.chat.core.objects.ChatUser;
 import de.deyovi.chat.web.controller.Mapping.MatchedMapping;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public interface Controller {
 

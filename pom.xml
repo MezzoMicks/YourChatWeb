@@ -15,7 +15,7 @@
         <scope>test</scope>
     </dependency>
     <dependency>
-        <groupId>deyovi.chat.core</groupId>
+        <groupId>de.deyovi.chat</groupId>
         <artifactId>YourChatCore</artifactId>
         <version>0.9.0</version>
     </dependency>
@@ -50,12 +50,6 @@
         <version>7.0.42</version>
         <scope>provided</scope>
     </dependency>
-		<dependency>
-			<groupId>org.apache.tomcat</groupId>
-			<artifactId>tomcat-catalina</artifactId>
-			<version>7.0.42</version>
-			<scope>provided</scope>
-		</dependency>
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>

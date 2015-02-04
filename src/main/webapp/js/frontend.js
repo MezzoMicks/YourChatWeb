@@ -107,7 +107,7 @@
 		if (user.guest == false) {
 			// add a hyperlink
 			var $userA = $('<a class="userLink" target="_blank">');
-			$userA.attr('href', 'profile.jsp?user=' + user.username);
+			$userA.attr('href', 'id/' + user.username);
 			$userLi.append($userA);
 			// if the user has an avatar, show a tooltip for it
 			if (user.avatar != null && user.avatar != 'null') {

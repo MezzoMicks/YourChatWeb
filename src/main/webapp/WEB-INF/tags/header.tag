@@ -22,7 +22,8 @@
 				<li><a href="help.html" target="_blank"><i
 						class="icon-question"></i>&nbsp;Help</a></li>
 				<li class="divider"></li>
-				<li><a href="profile.jsp?edit=true" target="chat_profil"><i
+                <c:url value="/id-edit/" var="urlIdEdit"/>
+				<li><a href="${urlIdEdit}" target="chat_profil"><i
 						class="icon-edit"></i>&nbsp;Profile</a></li>
 				<li><a href="#" data-reveal-id="inviteDialog"><i class="icon-ticket"></i>&nbsp;Invite</a></li>
 				<li><a href="#" data-reveal-id="mailInboxDialog"><i class="icon-envelope"></i>&nbsp;Mail</a></li>

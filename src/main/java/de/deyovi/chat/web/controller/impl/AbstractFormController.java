@@ -1,15 +1,8 @@
 package de.deyovi.chat.web.controller.impl;
 
-import java.io.File;
-import java.io.InputStream;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-
+import de.deyovi.chat.core.utils.ChatConfiguration;
+import de.deyovi.chat.core.utils.ChatUtils;
+import de.deyovi.chat.web.controller.Controller;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
@@ -17,9 +10,14 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-import de.deyovi.chat.core.utils.ChatConfiguration;
-import de.deyovi.chat.core.utils.ChatUtils;
-import de.deyovi.chat.web.controller.Controller;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.InputStream;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public abstract class AbstractFormController implements Controller {
 

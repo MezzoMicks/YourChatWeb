@@ -1,5 +1,22 @@
 package de.deyovi.chat.web.controller.impl;
 
+import de.deyovi.chat.core.objects.ChatUser;
+import de.deyovi.chat.core.objects.Profile;
+import de.deyovi.chat.core.services.ChatUserService;
+import de.deyovi.chat.core.services.ProfileService;
+import de.deyovi.chat.web.controller.*;
+import de.deyovi.chat.web.controller.Mapping.MatchedMapping;
+import de.deyovi.chat.web.controller.annotations.Controller;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import javax.ejb.Singleton;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
@@ -7,33 +24,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.ejb.Singleton;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import de.deyovi.chat.core.services.ChatUserService;
-import de.deyovi.chat.core.services.impl.DefaultChatUserService;
-import de.deyovi.chat.web.controller.*;
-import de.deyovi.chat.web.controller.annotations.Controller;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import de.deyovi.chat.core.objects.ChatUser;
-import de.deyovi.chat.core.objects.Profile;
-import de.deyovi.chat.core.services.ProfileService;
-import de.deyovi.chat.web.controller.Mapping.MatchedMapping;
-
 @Singleton
 @Controller
 public class ProfileController extends AbstractFormController {
 
 	private static final Logger logger = LogManager.getLogger(ProfileController.class);
-	private static final Mapping PATH_ID = new DefaultMapping("id");
-	private static final Mapping PATH_ID_EDIT = new DefaultMapping("id-edit");
+	private static final Mapping PATH_ID = new DefaultMapping("id/");
+	private static final Mapping PATH_ID_EDIT = new DefaultMapping("id-edit/");
 	private static final Mapping PATH_DELETE = new DefaultMapping("id-edit/delete");
 	private static final Mapping PATH_CHANGE = new DefaultMapping("id-edit/change");
 	private static final Mapping PATH_ADDIMAGE = new DefaultMapping("id-edit/addimage");

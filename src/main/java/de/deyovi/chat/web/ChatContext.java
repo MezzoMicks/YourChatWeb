@@ -1,14 +1,9 @@
 package de.deyovi.chat.web;
 
-import java.util.Set;
-
-import javax.servlet.ServletContainerInitializer;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-import javax.servlet.ServletException;
-
 import de.deyovi.chat.core.utils.ChatConfiguration;
+
+import javax.servlet.*;
+import java.util.Set;
 
 public class ChatContext implements ServletContainerInitializer, ServletContextListener {
 

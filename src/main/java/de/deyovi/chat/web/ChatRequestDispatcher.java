@@ -1,52 +1,25 @@
 package de.deyovi.chat.web;
 
-import java.beans.Beans;
-import java.beans.beancontext.BeanContextSupport;
-import java.io.IOException;
-import java.lang.reflect.Modifier;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.TreeMap;
-
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.ejb.EJBContext;
-import javax.ejb.Singleton;
-import javax.ejb.embeddable.EJBContainer;
-import javax.ejb.spi.EJBContainerProvider;
-import javax.enterprise.context.spi.Context;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-import de.deyovi.chat.web.controller.impl.ProfileController;
-import org.apache.catalina.core.ApplicationContext;
+import de.deyovi.chat.core.objects.ChatUser;
+import de.deyovi.chat.core.utils.ChatUtils;
+import de.deyovi.chat.facades.SetupFacade;
+import de.deyovi.chat.web.controller.*;
+import de.deyovi.chat.web.controller.Mapping.MatchedMapping;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-import de.deyovi.chat.core.objects.ChatUser;
-import de.deyovi.chat.core.utils.ChatUtils;
-import de.deyovi.chat.facades.SetupFacade;
-import de.deyovi.chat.facades.impl.DefaultSetupFacade;
-import de.deyovi.chat.web.controller.Controller;
-import de.deyovi.chat.web.controller.ControllerHTMLOutput;
-import de.deyovi.chat.web.controller.ControllerJSONOutput;
-import de.deyovi.chat.web.controller.ControllerOutput;
-import de.deyovi.chat.web.controller.ControllerRedirectOutput;
-import de.deyovi.chat.web.controller.ControllerStreamOutput;
-import de.deyovi.chat.web.controller.ControllerViewOutput;
-import de.deyovi.chat.web.controller.Mapping;
-import de.deyovi.chat.web.controller.Mapping.MatchedMapping;
-import org.apache.naming.factory.EjbFactory;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
 /**
  * Servlet implementation class ChatFacade
@@ -63,9 +36,13 @@ public class ChatRequestDispatcher extends HttpServlet {
     @Inject
     private SetupFacade setupFacade;
 
-    @PostConstruct
-	private void setup() {
-        for (Controller controller : ChatUtils.getBeansForType(Controller.class)) {
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        final String context = config.getServletContext().getContextPath();
+        logger.info("Looking for Controllers in Context : " + context);
+        for (Controller controller : ChatUtils.getBeansForType(Controller.class, context)) {
             if (controller != null) {
                 for (Mapping mapping : controller.getMappings()) {
                     logger.info("adding controller "
@@ -75,6 +52,11 @@ public class ChatRequestDispatcher extends HttpServlet {
                 }
             }
         }
+    }
+
+    @PostConstruct
+	private void setup() {
+
 	}
 
 	/**

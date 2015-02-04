@@ -86,48 +86,38 @@
 	  <hr />
 	  <div class="row">
 	    <div class="large-centered large-4 columns">
-	    <div class="section-container auto" data-section data-options="one_up: true; deep_linking: true">
-			<section>
-				<p class="title" data-section-title>
-					<a href="#login"><i class="icon-group"></i>&nbsp;${msgLogin}</a>
-				</p>
-				<div class="content" data-slug="login" data-section-content>
-					<c:url value="/login" var="loginURL"/>
-					<form id="loginForm" class="custom" action="${loginURL}" method="POST">
-						<input type="text" name="username" placeholder="${msgUsername}">
-						<br /> 
-						<input type="password" name="password" placeholder="${msgPassword}"> 
-						<input type="hidden" name="passwordHash" /> 
-						<input type="hidden" name="action" value="login" />
-						<input type="submit" class="button" value="${msgSend}"/>
-					</form>
-				</div>
-			</section>
-			<section>
-				<p class="title" data-section-title>
-					<a href="#register"><i class="icon-picture"></i>&nbsp;${msgRegister}</a>
-				</p>
-			<div class="content" data-slug="register" data-section-content>
-				<c:url value="/register" var="registerURL"/>
-				<form id="registerForm" class="custom" action="${registerURL}" method="POST">
-					<input type="text" name="username" placeholder="${msgUsername}">
-					<br /> 
-					<input type="password" name="password" placeholder="${msgPassword}">
-					<br /> 
-					<input type="password" name="passwordRepeat" placeholder="${msgPasswordAgain}">
-					<input type="hidden" name="passwordHash" /> 
-					<c:if test="${requestScope.keyRequired}">
-						<br />
-						<input type="text" name="key" placeholder="${msgInviteKey}">
-						<input type="hidden" name="keyHash" /> 
-					</c:if>
-					<input type="hidden" name="action" value="register" />
-					<input type="submit" class="button" value="${msgSend}"/>
-				</form>
-				<br />
-			</div>
-		</section>
-		</div>
+	        <h2>${msgLogin}</h2>
+            <c:url value="/login" var="loginURL"/>
+            <form id="loginForm" class="custom" action="${loginURL}" method="POST">
+                <input type="text" name="username" placeholder="${msgUsername}">
+                <br />
+                <input type="password" name="password" placeholder="${msgPassword}">
+                <input type="hidden" name="passwordHash" />
+                <input type="hidden" name="action" value="login" />
+                <input type="submit" class="button" value="${msgSend}"/>
+            </form>
+        </div>
+    </div>
+  <div class="row">
+      <div class="large-centered large-4 columns panel">
+          <h2>${msgRegister}</h2>
+        <c:url value="/register" var="registerURL"/>
+        <form id="registerForm" class="custom" action="${registerURL}" method="POST">
+            <input type="text" name="username" placeholder="${msgUsername}">
+            <br />
+            <input type="password" name="password" placeholder="${msgPassword}">
+            <br />
+            <input type="password" name="passwordRepeat" placeholder="${msgPasswordAgain}">
+            <input type="hidden" name="passwordHash" />
+            <c:if test="${requestScope.keyRequired}">
+                <br />
+                <input type="text" name="key" placeholder="${msgInviteKey}">
+                <input type="hidden" name="keyHash" />
+            </c:if>
+            <input type="hidden" name="action" value="register" />
+            <input type="submit" class="button" value="${msgSend}"/>
+        </form>
+        <br />
     </div>
   </div>
   </jsp:body>

@@ -52,7 +52,7 @@
 			</div>
 		</div>	
 			<div id="sidebar" class="offcanvas left small-12 large-3 columns">
-				<div class="section-container auto" data-section data-options="one_up: false; deep_linking: true">
+				<div class="section-container auto" data-section data-section-resized data-options="one_up: false; deep_linking: true">
 				<section>
 					<p class="title" data-section-title>
 						<a href="#users"><i class="icon-group"></i>&nbsp;${msgUsers}</a>

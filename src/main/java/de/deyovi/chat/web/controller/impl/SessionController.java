@@ -1,32 +1,30 @@
 package de.deyovi.chat.web.controller.impl;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.ejb.EJB;
-import javax.ejb.Singleton;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-import de.deyovi.chat.web.controller.*;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import de.deyovi.aide.Outcome;
 import de.deyovi.chat.core.objects.Alert;
 import de.deyovi.chat.core.objects.ChatUser;
 import de.deyovi.chat.core.utils.ChatConfiguration;
 import de.deyovi.chat.facades.SessionFacade;
-import de.deyovi.chat.facades.impl.DefaultSessionFacade;
 import de.deyovi.chat.web.SessionParameters;
+import de.deyovi.chat.web.controller.*;
 import de.deyovi.chat.web.controller.Mapping.MatchedMapping;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import javax.ejb.Singleton;
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.core.Response;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Controller for general Input (talking and uploading) and some additional actions
@@ -77,7 +75,7 @@ public class SessionController extends AbstractFormController {
 			String locaLogoutKey = (String) session.getAttribute(SessionParameters.LOGOUT_KEY);
 			if (user != null) {
 				String paramLogoutKey = request.getParameter("key");
-				if (paramLogoutKey.equals(locaLogoutKey)) {
+				if (paramLogoutKey != null && paramLogoutKey.equals(locaLogoutKey)) {
 					session.setAttribute(SessionParameters.USER, null);
 					session.invalidate();
 					return new ControllerRedirectOutput("/");
@@ -115,7 +113,7 @@ public class SessionController extends AbstractFormController {
 			return new ControllerViewOutput("login", null);
 		}
 	}
-	
+
 	private ControllerOutput login(ChatUser user, HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		if (session != null) {

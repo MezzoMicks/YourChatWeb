@@ -1,33 +1,25 @@
 package de.deyovi.chat.web.controller.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import de.deyovi.chat.core.constants.ChatConstants.ImageSize;
+import de.deyovi.chat.dao.ImageDAO;
+import de.deyovi.chat.dao.entities.ImageEntity;
+import de.deyovi.chat.core.objects.ChatUser;
+import de.deyovi.chat.core.services.FileStoreService;
+import de.deyovi.chat.web.controller.ControllerOutput;
+import de.deyovi.chat.web.controller.ControllerStatusOutput;
+import de.deyovi.chat.web.controller.ControllerStreamOutput;
+import de.deyovi.chat.web.controller.Mapping;
+import de.deyovi.chat.web.controller.Mapping.MatchedMapping;
+import de.deyovi.chat.web.controller.annotations.Controller;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import javax.ejb.Singleton;
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import de.deyovi.chat.web.controller.annotations.Controller;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-
-import de.deyovi.chat.core.constants.ChatConstants.ImageSize;
-import de.deyovi.chat.core.dao.ImageDAO;
-import de.deyovi.chat.core.dao.impl.DefaultImageDAO;
-import de.deyovi.chat.core.entities.ImageEntity;
-import de.deyovi.chat.core.objects.ChatUser;
-import de.deyovi.chat.core.services.FileStoreService;
-import de.deyovi.chat.core.services.impl.DefaultFileStoreService;
-import de.deyovi.chat.web.controller.ControllerOutput;
-import de.deyovi.chat.web.controller.ControllerStatusOutput;
-import de.deyovi.chat.web.controller.ControllerStreamOutput;
-import de.deyovi.chat.web.controller.Mapping;
-import de.deyovi.chat.web.controller.Mapping.MatchedMapping;
+import java.io.*;
 
 /**
  * Controller for general Input (talking and uploading) and some additional actions

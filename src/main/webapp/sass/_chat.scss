@@ -66,7 +66,11 @@ textarea {
 	width: 100%;
 	padding: 4px;
 	overflow-y: scroll;
-	
+
+    span.username::after {
+      content: ':';
+    }
+
 	p {
 		line-height: 1.25;
 		margin-bottom: 0;
@@ -101,6 +105,8 @@ textarea {
 	}
 }
 
+
+
 .file.hidden {
 	opacity:0;
 	display:block;
@@ -112,8 +118,6 @@ textarea {
   .font-primary {
     color: #ffffff;
   }
-
-
 }
 
 table.mail {

@@ -1,24 +1,22 @@
 package de.deyovi.chat.web.controller.impl;
 
-import java.io.InputStream;
-import java.util.Map;
-
-import javax.ejb.Singleton;
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import de.deyovi.chat.web.controller.annotations.Controller;
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-
 import de.deyovi.chat.core.objects.ChatUser;
 import de.deyovi.chat.facades.InputFacade;
 import de.deyovi.chat.web.controller.ControllerOutput;
 import de.deyovi.chat.web.controller.ControllerStatusOutput;
 import de.deyovi.chat.web.controller.Mapping;
 import de.deyovi.chat.web.controller.Mapping.MatchedMapping;
+import de.deyovi.chat.web.controller.annotations.Controller;
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
+import javax.ejb.Singleton;
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.InputStream;
+import java.util.Map;
 
 /**
  * Controller for general Input (talking and uploading) and some additional actions

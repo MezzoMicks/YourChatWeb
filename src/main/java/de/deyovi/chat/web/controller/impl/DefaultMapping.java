@@ -1,10 +1,9 @@
 package de.deyovi.chat.web.controller.impl;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-
 import de.deyovi.chat.web.controller.Mapping;
 import de.deyovi.chat.web.controller.Method;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 public class DefaultMapping implements Mapping, Comparable<Mapping> {
 

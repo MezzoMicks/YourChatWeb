@@ -1,14 +1,12 @@
 package de.deyovi.chat.web.controller.impl;
 
-import javax.inject.Inject;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-
+import de.deyovi.chat.core.services.EntityService;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-import de.deyovi.chat.core.services.EntityService;
-import de.deyovi.chat.core.services.impl.DefaultEntityService;
+import javax.inject.Inject;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 
 public class Configurator implements ServletContextListener {
 

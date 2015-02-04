@@ -1,34 +1,24 @@
 package de.deyovi.chat.web.controller.impl;
 
+import de.deyovi.chat.core.objects.ChatUser;
+import de.deyovi.chat.core.services.OutputService.OutputMeta;
+import de.deyovi.chat.core.services.impl.HTMLMessageConsumer;
+import de.deyovi.chat.facades.OutputFacade;
+import de.deyovi.chat.web.controller.*;
+import de.deyovi.chat.web.controller.Mapping.MatchedMapping;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.json.JSONObject;
+
+import javax.ejb.Singleton;
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
-
-import javax.ejb.EJB;
-import javax.ejb.Singleton;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-import org.json.JSONObject;
-
-import de.deyovi.chat.core.objects.ChatUser;
-import de.deyovi.chat.core.services.OutputService.OutputMeta;
-import de.deyovi.chat.core.services.impl.HTMLMessageConsumer;
-import de.deyovi.chat.facades.OutputFacade;
-import de.deyovi.chat.facades.impl.DefaultOutputFacade;
-import de.deyovi.chat.web.controller.Controller;
-import de.deyovi.chat.web.controller.ControllerHTMLOutput;
-import de.deyovi.chat.web.controller.ControllerJSONOutput;
-import de.deyovi.chat.web.controller.ControllerOutput;
-import de.deyovi.chat.web.controller.ControllerStatusOutput;
-import de.deyovi.chat.web.controller.Mapping;
-import de.deyovi.chat.web.controller.Mapping.MatchedMapping;
 
 @Singleton
 @de.deyovi.chat.web.controller.annotations.Controller

@@ -1,17 +1,12 @@
 package de.deyovi.chat.web;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.util.Locale;
-
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-
+import de.deyovi.aide.Outcome;
+import de.deyovi.chat.core.objects.ChatUser;
+import de.deyovi.chat.core.objects.MessageEventListener;
+import de.deyovi.chat.core.services.impl.JSONMessageConsumer;
+import de.deyovi.chat.facades.InputFacade;
+import de.deyovi.chat.facades.OutputFacade;
+import de.deyovi.chat.facades.SessionFacade;
 import org.apache.catalina.websocket.StreamInbound;
 import org.apache.catalina.websocket.WebSocketServlet;
 import org.apache.catalina.websocket.WsOutbound;
@@ -20,16 +15,12 @@ import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import de.deyovi.aide.Outcome;
-import de.deyovi.chat.core.objects.ChatUser;
-import de.deyovi.chat.core.objects.MessageEventListener;
-import de.deyovi.chat.core.services.impl.JSONMessageConsumer;
-import de.deyovi.chat.facades.InputFacade;
-import de.deyovi.chat.facades.OutputFacade;
-import de.deyovi.chat.facades.SessionFacade;
-import de.deyovi.chat.facades.impl.DefaultInputFacade;
-import de.deyovi.chat.facades.impl.DefaultOutputFacade;
-import de.deyovi.chat.facades.impl.DefaultSessionFacade;
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import java.io.*;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.util.Locale;
 
 public class ChatSocket extends WebSocketServlet {
 
