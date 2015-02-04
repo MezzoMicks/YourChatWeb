@@ -2,11 +2,11 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%-- Localization first --%>
 <fmt:bundle basename="de.deyovi.chat.web.messages" prefix="front.">
 	<fmt:message key="label.login" var="msgLogin"/>
 	<fmt:message key="label.register" var="msgRegister"/>
-	<fmt:message key="label.send" var="msgSend"/>
 	<fmt:message key="label.send" var="msgSend"/>
 	<fmt:message key="placeholder.username" var="msgUsername"/>
 	<fmt:message key="placeholder.password" var="msgPassword"/>
@@ -20,61 +20,8 @@
 
 <t:master>
 	<jsp:attribute name="additionalScripts">
-		<t:script src="/js/sha256.js" />
 		<script type="text/javascript">
 			var keyRequired = ${invitationRequired};
-			
-		
-			
-			function login() {
-				var $form = $('#loginForm');
-				var password = $.trim($form.find('input[name="password"]').val());
-				password = sha256_digest(password);
-				$form.find('input[name="password"]').val('');
-				var username = $form.find('input[name="username"]').val();
-				var sugar = getSugar(username);
-				console.log('retrieved sugar : ' + sugar);
-				if (sugar != null && sugar != "") {
-					$form.find('input[name="passwordHash"]').val(sha256_digest(sugar + password));
-				} else {
-					$form.find('input[name="passwordHash"]').val(sha256_digest(password));
-				}
-				return true;
-			}
-			
-			function register() {
-				var $form = $('#registerForm');
-				var username = $.trim($form.find('input[name="username"]').val());
-				var password = $.trim($form.find('input[name="password"]').val());
-				$form.find('input[name="password"]').val('');
-				var password2 = $.trim($form.find('input[name="passwordRepeat"]').val());
-				$form.find('input[name="passwordRepeat"]').val('');
-				if (password == '') {
-					return false;
-				} else	if (password != password2) {
-					$("#registerLabel").html("Supplied passwords differ!");
-					return false;
-				} else {
-					var sugar = getSugar(username);
-					console.log("got sugar:" + sugar);
-					if (keyRequired) {
-						var key = $form.find('input[name="key"]').val();
-						$form.find('input[name="keyHash"]').val(sha256_digest(sugar + key));
-					}
-					$form.find('input[name="passwordHash"]').val(sha256_digest(password));
-					return true;
-				}
-			}
-			
-			$().ready(function() {
-				$(document).foundation();
-				if (sha256_self_test() == false) {
-					$('#loginForm').html("<strong>Login not possible!</strong>");
-					$('#registerForm').html("<strong>Registration not possible!</strong>");
-				}
-				$('#loginForm').submit(login);
-				$('#registerForm').submit(register);
-			});
 		</script>
 	</jsp:attribute>
 	<jsp:body>
@@ -87,13 +34,12 @@
 	  <div class="row">
 	    <div class="large-centered large-4 columns">
 	        <h2>${msgLogin}</h2>
-            <c:url value="/login" var="loginURL"/>
+            <c:url value="j_spring_security_check" var="loginURL"/>
             <form id="loginForm" class="custom" action="${loginURL}" method="POST">
                 <input type="text" name="username" placeholder="${msgUsername}">
                 <br />
                 <input type="password" name="password" placeholder="${msgPassword}">
-                <input type="hidden" name="passwordHash" />
-                <input type="hidden" name="action" value="login" />
+                <br />
                 <input type="submit" class="button" value="${msgSend}"/>
             </form>
         </div>
@@ -102,21 +48,18 @@
       <div class="large-centered large-4 columns panel">
           <h2>${msgRegister}</h2>
         <c:url value="/register" var="registerURL"/>
-        <form id="registerForm" class="custom" action="${registerURL}" method="POST">
-            <input type="text" name="username" placeholder="${msgUsername}">
+         <form:form modelAttribute="registerData" action="${registerURL}" method="POST" class="custom">
+            <form:input type="text" path="username" placeholder="${msgUsername}" />
             <br />
-            <input type="password" name="password" placeholder="${msgPassword}">
+            <form:input type="password" path="password" placeholder="${msgPassword}" />
             <br />
-            <input type="password" name="passwordRepeat" placeholder="${msgPasswordAgain}">
-            <input type="hidden" name="passwordHash" />
+            <form:input type="password" path="passwordRepeat" placeholder="${msgPasswordAgain}" />
             <c:if test="${requestScope.keyRequired}">
                 <br />
-                <input type="text" name="key" placeholder="${msgInviteKey}">
-                <input type="hidden" name="keyHash" />
+                <form:input type="text" path="invitationKey" placeholder="${msgInviteKey}" />
             </c:if>
-            <input type="hidden" name="action" value="register" />
-            <input type="submit" class="button" value="${msgSend}"/>
-        </form>
+            <form:button class="button">${msgSend}</form:button>
+        </form:form>
         <br />
     </div>
   </div>

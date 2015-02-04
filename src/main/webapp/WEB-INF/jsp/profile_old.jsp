@@ -1,14 +1,14 @@
-<%@page import="de.yovi.chat.api.ActionHandlerRemote"%>
-<%@page import="de.yovi.chat.system.ActionHandler"%>
-<%@page import="de.yovi.chat.api.ProfileImage"%>
-<%@page import="java.text.SimpleDateFormat"%>
 <%@page import="de.yovi.chat.ChatUtils"%>
-<%@page import="de.yovi.chat.web.ActionServlet"%>
+<%@page import="de.yovi.chat.api.ActionHandlerRemote"%>
+<%@page import="de.yovi.chat.api.Profile"%>
+<%@page import="de.yovi.chat.api.ProfileImage"%>
 <%@page import="de.yovi.chat.api.User"%>
-<%@page import="de.yovi.chat.web.SessionParameters"%>
+<%@page import="de.yovi.chat.system.ActionHandler"%>
 <%@page import="de.yovi.chat.user.ProfileHandler"%>
 <%@page import="de.yovi.chat.user.ProfileHandlerRemote"%>
-<%@page import="de.yovi.chat.api.Profile"%>
+<%@page import="de.yovi.chat.web.ActionServlet"%>
+<%@page import="de.yovi.chat.web.SessionParameters"%>
+<%@page import="java.text.SimpleDateFormat"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
 	boolean redirect = false;

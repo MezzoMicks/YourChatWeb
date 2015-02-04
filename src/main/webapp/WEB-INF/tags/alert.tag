@@ -2,7 +2,7 @@
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<fmt:setBundle basename="de.deyovi.chat.web.messages"/>
+<fmt:setBundle basename="de.deyovi.chat.de.deyovi.chat.web.messages"/>
 
 <section id="alerts"></section>
 <c:choose>
@@ -14,7 +14,7 @@
 	</c:otherwise>
 </c:choose>
 <c:set var="alertObjects">
-	<c:forEach items="${userAlerts}" var="alert" varStatus="i">
+	<c:forEach items="${alerts}" var="alert" varStatus="i">
 		<c:if test="${i.index gt 0}">
 			,
 		</c:if>

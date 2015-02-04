@@ -7,7 +7,7 @@
 <jsp:useBean id="profileUser" type="de.deyovi.chat.core.objects.ChatUser" scope="request" />
 
 <%-- Localization first --%>
-<fmt:bundle basename="de.deyovi.chat.web.messages" prefix="front.">
+<fmt:bundle basename="de.deyovi.chat.de.deyovi.chat.web.messages" prefix="front.">
 	<fmt:message key="label.login" var="msgLogin" />
 	<fmt:message key="label.register" var="msgRegister" />
 	<fmt:message key="label.send" var="msgSend" />

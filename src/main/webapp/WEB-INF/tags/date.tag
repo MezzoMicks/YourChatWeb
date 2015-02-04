@@ -4,7 +4,7 @@
 <%@ attribute name="date" required="true" type="java.util.Date" %>
 <%@ attribute name="showAge" required="false" type="java.lang.Boolean" %>
 
-<fmt:bundle basename="de.deyovi.chat.web.messages" prefix="date.">
+<fmt:bundle basename="de.deyovi.chat.de.deyovi.chat.web.messages" prefix="date.">
     <fmt:message key="label.agePrefix" var="msgAgePrefix" />
     <fmt:message key="label.ageSuffix" var="msgAgeSuffix" />
     <fmt:message key="pattern" var="pattern" />

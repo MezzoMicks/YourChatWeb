@@ -3,7 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%-- Localization first --%>
-<fmt:bundle basename="de.deyovi.chat.web.messages" prefix="front.">
+<fmt:bundle basename="de.deyovi.chat.de.deyovi.chat.web.messages" prefix="front.">
 	<fmt:message key="label.initialization" var="msgLabelInitialization"/>
 	<fmt:message key="label.initialize" var="msgLabelInitialize"/>
 	<fmt:message key="tooltip.initialize" var="msgTooltipInitialize"/>

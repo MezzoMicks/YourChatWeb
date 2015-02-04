@@ -7,8 +7,8 @@
 <c:set var="editable" value="${not empty editAction}" />
 <c:choose>
     <c:when test="${image == null}">
-        <c:url value="/img/noimage.png" var="previewURL" />
-        <c:url value="/img/noimage.png" var="fullURL" />
+        <c:url value="/resources0/img/noimage.png" var="previewURL" />
+        <c:url value="/resources/img/noimage.png" var="fullURL" />
     </c:when>
     <c:otherwise>
         <c:url value="/d/db_${image.id}.preview.jpg" var="previewURL" />
